@@ -1,0 +1,1013 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ternary Phase Diagram</title>
+<style>
+:root { color-scheme: light; }
+html { background: #ffffff; }
+body {
+  background: #ffffff;
+  color: #000000;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 17px;
+  line-height: 1.4;
+  margin: 0;
+  padding-block: 16px 40px;
+  padding-inline: 16px;
+}
+.page { max-width: 64em; }
+.text { max-width: 44em; }
+h1 { font-size: 1.6em; margin: 4px 0 8px 0; }
+h2 { font-size: 1.25em; margin: 1.6em 0 0.5em 0; }
+p { margin: 0 0 10px 0; }
+ul, ol { margin: 0 0 10px 0; padding-left: 1.4em; }
+li { margin-bottom: 6px; }
+a:link { color: #0000ee; }
+a:visited { color: #551a8b; }
+hr { border: 0; border-top: 1px solid #808080; margin: 1.5em 0 0.8em 0; }
+.small { font-size: 15px; color: #333333; }
+.tool { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+.fig { flex: 1 1 480px; max-width: 680px; min-width: 0; }
+.side { flex: 1 1 280px; max-width: 25em; min-width: 0; }
+#plot { display: block; width: 100%; height: auto; max-width: 100%; border: 1px solid #808080; background: #ffffff; cursor: crosshair; }
+.caption { font-size: 15px; margin-top: 6px; }
+fieldset { margin: 0 0 12px 0; padding: 6px 10px 10px 10px; min-width: 0; }
+legend { font-weight: bold; padding: 0 4px; }
+table.form { border-collapse: collapse; }
+table.form td { padding: 2px 8px 2px 0; vertical-align: middle; }
+input[type="number"] { width: 6em; font-size: 15px; }
+select { max-width: 100%; font-size: 15px; }
+table.data { border-collapse: collapse; margin: 6px 0 10px 0; font-size: 15px; }
+table.data th, table.data td { border: 1px solid #808080; padding: 2px 6px; text-align: right; vertical-align: top; }
+table.data th { font-weight: bold; }
+table.data th:first-child, table.data td:first-child { text-align: left; }
+table.data caption { text-align: left; font-weight: bold; padding-bottom: 4px; }
+.scroll { overflow-x: auto; max-width: 100%; }
+pre { font-size: 14px; overflow-x: auto; margin: 0 0 10px 0; }
+#result p { margin: 0 0 6px 0; }
+</style>
+
+<div class="page">
+
+<p class="small"><a href="/" target="_blank" rel="noopener">Hashim Ishaque</a> &gt; Ternary phase diagrams</p>
+
+<h1>Ternary phase diagrams for polymer / solvent / non-solvent systems</h1>
+<p class="text">
+This page computes Flory-Huggins phase diagrams: the binodal, the spinodal and the tie-lines.
+Choose a system, change the parameters if you like, and press Compute. Click on the diagram to
+test a composition. For the two Torlon systems with 2-propanol the parameters are fitted to
+published cloud points (Ishaque 2020). For the other systems they are rough estimates.
+</p>
+
+<hr>
+
+<div class="tool">
+  <div class="fig">
+    <svg id="plot" viewBox="0 78 640 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ternary phase diagram"></svg>
+    <p class="caption" id="caption"></p>
+  </div>
+
+  <div class="side">
+    <form id="form" novalidate>
+      <fieldset>
+        <legend>System</legend>
+        <table class="form">
+          <tr><td><label for="sel-p">Polymer</label></td><td><select id="sel-p"></select></td></tr>
+          <tr><td><label for="sel-s">Solvent</label></td><td><select id="sel-s"></select></td></tr>
+          <tr><td><label for="sel-n">Non-solvent</label></td><td><select id="sel-n"></select></td></tr>
+        </table>
+        <p class="small" id="status" style="margin-top:6px"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Parameters</legend>
+        <table class="form">
+          <tr><td><label for="c12">χ<sub>12</sub> non-solvent / solvent</label></td><td><input type="number" id="c12" step="0.01" min="0" max="2.5"></td></tr>
+          <tr><td><label for="c13">χ<sub>13</sub> non-solvent / polymer</label></td><td><input type="number" id="c13" step="0.01" min="0.3" max="3.5"></td></tr>
+          <tr><td><label for="c23">χ<sub>23</sub> solvent / polymer</label></td><td><input type="number" id="c23" step="0.01" min="-0.5" max="1"></td></tr>
+          <tr><td><label for="n3">n<sub>3</sub> chain length</label></td><td><input type="number" id="n3" step="10" min="50" max="2000"></td></tr>
+        </table>
+        <p style="margin-top:8px"><input type="submit" value="Compute"> <input type="button" id="reset" value="Reset"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Display</legend>
+        Units:
+        <label><input type="radio" name="units" id="u-wt" value="wt" checked> wt %</label>
+        <label><input type="radio" name="units" id="u-vol" value="vol"> vol %</label><br>
+        View:
+        <label><input type="radio" name="zoom" id="z-corner" value="corner" checked> solvent corner</label>
+        <label><input type="radio" name="zoom" id="z-full" value="full"> whole triangle</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Test a composition</legend>
+        <table class="form">
+          <tr><td><label for="t-p">Polymer</label></td><td><input type="number" id="t-p" step="0.1" min="0" max="100"> <span class="unit"></span></td></tr>
+          <tr><td><label for="t-n">Non-solvent</label></td><td><input type="number" id="t-n" step="0.1" min="0" max="100"> <span class="unit"></span></td></tr>
+        </table>
+        <p class="small" id="t-s" style="margin-top:4px"></p>
+        <input type="button" id="t-go" value="Test">
+      </fieldset>
+    </form>
+
+    <div id="result" aria-live="polite"></div>
+    <div id="readout" aria-live="polite" class="small"></div>
+  </div>
+</div>
+
+<div class="text">
+
+<h2>How to read the diagram</h2>
+<p>
+Each point in the triangle is one composition, and the three percentages add up to 100. Read
+each component along its own axis. Its grid lines run parallel to the side opposite its corner.
+</p>
+<ul>
+<li><b>Outside the binodal</b> (red line): one phase. The solution is clear and stable.</li>
+<li><b>Between the binodal and the spinodal</b> (blue dashed line): metastable. The solution
+separates by nucleation and growth of the second phase, which can take time.</li>
+<li><b>Inside the spinodal</b>: unstable. The solution separates spontaneously, typically into
+an interconnected structure (spinodal decomposition).</li>
+</ul>
+<p>
+Inside the grey region a composition splits into two phases. A tie-line joins the two phases
+that coexist, and the position of a composition along its tie-line gives the share of each
+phase (the lever rule).
+</p>
+<p>
+In immersion precipitation, solvent leaves the cast film while non-solvent enters, so the
+composition moves from the solvent and polymer side toward the polymer and non-solvent side.
+If it enters the two-phase region at a higher polymer content than the critical point, the
+polymer-lean phase nucleates, which usually gives a porous, sponge-like structure. Below the
+critical point the polymer-rich phase nucleates as droplets, which tends to give a weak,
+nodular structure. In a cloud-point titration, non-solvent is added to a polymer solution, so
+the composition moves straight toward the non-solvent corner until the solution turns turbid.
+</p>
+
+<h2>Fit to measured cloud points</h2>
+<p>
+Cloud points of Torlon 4000HV in NMP and in DMF, titrated with 2-propanol, are given in
+Ishaque (2020), Figure 36. The points were read off that figure, taken as weight percent, and
+converted to volume fractions. The model was then fitted to these points. This is a
+calibration, not an independent test: the model is compared with the same nine points it was
+fitted to.
+</p>
+<div class="scroll">
+<table class="data">
+<tr><th>Parameter</th><th>Value</th><th>How it was set</th></tr>
+<tr><td>χ<sub>12</sub></td><td>1.10 (NMP), 0.73 (DMF)</td><td style="text-align:left">Not fitted. Estimated from Hansen solubility parameters.</td></tr>
+<tr><td>χ<sub>13</sub></td><td id="fit-c13"></td><td style="text-align:left">Fitted. One value for both systems, since it is the same pair (2-propanol and Torlon).</td></tr>
+<tr><td>χ<sub>23</sub></td><td id="fit-c23"></td><td style="text-align:left">Fitted for each solvent.</td></tr>
+<tr><td>n<sub>3</sub></td><td>600</td><td style="text-align:left">Fitted. 300 fits clearly worse (RMS 0.84 against about 0.6 wt %), 1000 about as well. The molar mass of this grade is not known.</td></tr>
+</table>
+</div>
+<p class="small">Densities at 25 °C, in g/cm³: 2-propanol 0.781, NMP 1.028, DMF 0.944, Torlon about 1.40.</p>
+<div id="val-tables"></div>
+<p id="val-summary"></p>
+<p>
+The fit is not unique. Any χ<sub>13</sub> from about 1.4 to 1.8 fits within 1 wt % if
+χ<sub>23</sub> is adjusted with it. Over that range χ<sub>23</sub> for NMP goes from about 0.46
+to below zero, while χ<sub>23</sub> for DMF only goes from about 0.52 to 0.44. Two results hold
+over the whole range. χ<sub>13</sub> must be at least about 1.3 to 1.4. And DMF is always the
+weaker solvent for Torlon, not far from the value at which it would stop dissolving long chains
+(χ<sub>23</sub> = 0.54 for n<sub>3</sub> = 600). In the fit χ<sub>23</sub> was kept between
+−0.3 and that limit. These conclusions depend on the Hansen estimates for χ<sub>12</sub>. An
+independent measurement, for example the swelling of Torlon in 2-propanol, would be needed to
+fix the individual values.
+</p>
+<p>
+The points were read from a figure, so they carry about ±0.5 wt % of reading error. The figure
+does not state its units. If the source tables are in volume percent, the fit has to be redone.
+</p>
+
+<h2>Method</h2>
+<p>
+Flory-Huggins free energy of mixing per lattice site, for non-solvent (1), solvent (2) and
+polymer (3) with volume fractions φ<sub>i</sub>:
+</p>
+<pre>ΔG_m / RT = φ1 ln φ1 + φ2 ln φ2 + (φ3/n3) ln φ3
+          + χ12 φ1 φ2 + χ13 φ1 φ3 + χ23 φ2 φ3</pre>
+<p>
+<b>Binodal.</b> Two phases coexist when all three chemical potentials are equal in both. The
+program starts on the polymer / non-solvent side, where the problem is a binary one, and then
+follows the binodal into the triangle one tie-line at a time. At each step it fixes the polymer
+content of the polymer-rich phase and solves the three equations with Newton's method. It works
+with the logarithms of small fractions, because the polymer-lean phase can contain less than
+10<sup>−300</sup> polymer. The steps get smaller as the tie-lines get shorter, and the
+calculation stops where the tie-line shrinks to a point, at the critical point.
+</p>
+<p>
+<b>Spinodal.</b> The limit of local stability, where the determinant of the second derivatives
+of ΔG<sub>m</sub> is zero:
+</p>
+<pre>G22 G33 − G23² = 0
+G22 = 1/φ1 + 1/φ2 − 2 χ12
+G33 = 1/φ1 + 1/(n3 φ3) − 2 χ13
+G23 = 1/φ1 − χ12 − χ13 + χ23</pre>
+<p>
+<b>Checks.</b> On every computed tie-line the chemical potentials agree to within about
+10<sup>−10</sup> per lattice site, and the binodal closes where the spinodal determinant passes
+through zero, as it must at a critical point. The solver was compared with an independent
+implementation in Python (SciPy): tie-lines agree to better than 10<sup>−7</sup>, critical points
+to about 3 × 10<sup>−5</sup>, and the fitted cloud points to 0.1 wt %. When you click a point in
+the two-phase region, the tie-line through it is solved exactly, not interpolated.
+</p>
+
+<h2>Limitations</h2>
+<p>
+The χ parameters are constant, with no dependence on composition or temperature. Both small
+molecules occupy one lattice site, the polymer has a single chain length, and there is no
+ternary interaction term. These are the textbook assumptions. They work poorly for water-based
+systems, where the interaction parameters depend strongly on composition. Altena and Smolders,
+and Romay, Diban and Urtiaga, use a composition-dependent non-solvent / solvent parameter for
+this reason, and Yilmaz and McHugh show how sensitive the diagram is to the interaction
+parameters and their concentration dependence. For the water systems in the list,
+χ<sub>13</sub> is set between 2 and 3, which puts the cloud points at a few to about 20 wt %
+water, the usual order of magnitude. These values are not fitted to data.
+</p>
+<p>
+The program traces the two-phase region that starts on the polymer / non-solvent side, which is
+the normal case for membrane casting. It gives a note when the solvent and non-solvent would
+separate on their own, when the solvent is too poor to dissolve the polymer, or when no
+two-phase region starts on that side.
+</p>
+
+<h2>References</h2>
+<ol>
+<li>Flory, P. J. <i>Principles of Polymer Chemistry.</i> Cornell University Press, 1953.</li>
+<li>Tompa, H. <i>Polymer Solutions.</i> Butterworths, London, 1956.</li>
+<li>Altena, F. W.; Smolders, C. A. Calculation of liquid-liquid phase separation in a ternary system of a polymer in a mixture of a solvent and a nonsolvent. <i>Macromolecules</i> 15 (1982) 1491 to 1497.</li>
+<li>Yilmaz, L.; McHugh, A. J. Analysis of nonsolvent-solvent-polymer phase diagrams and their relevance to membrane formation modeling. <i>J. Appl. Polym. Sci.</i> 31 (1986) 997 to 1018.</li>
+<li>Romay, M.; Diban, N.; Urtiaga, A. Thermodynamic modeling and validation of the temperature influence in ternary phase polymer systems. <i>Polymers</i> 13 (2021) 678. <a href="https://doi.org/10.3390/polym13050678" target="_blank" rel="noopener">doi:10.3390/polym13050678</a></li>
+<li>Hansen, C. M. <i>Hansen Solubility Parameters: A User's Handbook,</i> 2nd ed. CRC Press, 2007.</li>
+<li>Mulder, M. <i>Basic Principles of Membrane Technology,</i> 2nd ed. Kluwer, 1996.</li>
+<li>Ishaque, H. Development of novel polymeric/inorganic composite membranes for the application in gas phase membrane reactors. Master's thesis, Technische Universität Hamburg, 2020. Figure 36 (cloud points). <a href="https://publications.hereon.de/id/38756/" target="_blank" rel="noopener">publications.hereon.de/id/38756</a></li>
+</ol>
+
+<hr>
+<p class="small">H. Ishaque, October 2026. <a href="/" target="_blank" rel="noopener">Home page</a>.</p>
+
+</div>
+</div>
+
+<script>
+(function () {
+'use strict';
+
+// Flory-Huggins ternary solver: non-solvent (1), solvent (2), polymer (3).
+// Pure functions, no DOM. Used by the page and by the node fitting/test scripts.
+// Volume fractions throughout. n1 = n2 = 1 (lattice sites per molecule), n3 = polymer.
+
+function muFn(f1, f2, f3, n3, c12, c13, c23, lnf2, lnf3) {
+  // Chemical potentials over RT, per molecule (Tompa / Altena-Smolders form, n1 = n2 = 1).
+  // lnf2 and lnf3 may be passed directly: a polymer-lean phase can hold less polymer than
+  // a double can represent (ln f3 < -745), and the logarithm must not be clamped.
+  const L = (f) => Math.log(Math.max(f, 1e-300));
+  const l2 = lnf2 !== undefined ? lnf2 : L(f2);
+  const l3 = lnf3 !== undefined ? lnf3 : L(f3);
+  const p1 = f1, p2 = f2, p3 = f3;
+  const mu1 = L(p1) + 1 - p1 - p2 - p3 / n3
+            + (c12 * p2 + c13 * p3) * (p2 + p3) - c23 * p2 * p3;
+  const mu2 = l2 + 1 - p2 - p1 - p3 / n3
+            + (c12 * p1 + c23 * p3) * (p1 + p3) - c13 * p1 * p3;
+  const mu3 = l3 + 1 - p3 - n3 * p1 - n3 * p2
+            + n3 * ((c13 * p1 + c23 * p2) * (p1 + p2) - c12 * p1 * p2);
+  return [mu1, mu2, mu3];
+}
+
+// Spinodal: determinant of the Hessian of dG/RT in (f2, f3) with f1 = 1 - f2 - f3.
+function spinodalDet(f1, f2, f3, n3, c12, c13, c23) {
+  if (f1 <= 0 || f2 <= 0 || f3 <= 0) return NaN;
+  const G22 = 1 / f1 + 1 / f2 - 2 * c12;
+  const G33 = 1 / f1 + 1 / (n3 * f3) - 2 * c13;
+  const G23 = 1 / f1 - c12 - c13 + c23;
+  return G22 * G33 - G23 * G23;
+}
+
+function solve(A, b) {
+  const n = b.length;
+  const M = A.map((r, i) => r.concat([b[i]]));
+  for (let i = 0; i < n; i++) {
+    let piv = i;
+    for (let k = i + 1; k < n; k++) if (Math.abs(M[k][i]) > Math.abs(M[piv][i])) piv = k;
+    if (Math.abs(M[piv][i]) < 1e-300) return null;
+    [M[i], M[piv]] = [M[piv], M[i]];
+    for (let k = i + 1; k < n; k++) {
+      const f = M[k][i] / M[i][i];
+      for (let j = i; j <= n; j++) M[k][j] -= f * M[i][j];
+    }
+  }
+  const x = new Array(n).fill(0);
+  for (let i = n - 1; i >= 0; i--) {
+    let s = M[i][n];
+    for (let j = i + 1; j < n; j++) s -= M[i][j] * x[j];
+    x[i] = s / M[i][i];
+  }
+  return x;
+}
+
+// Damped Newton with a numerical Jacobian. F returns null when x is outside the domain.
+function newton(F, x0, tol, maxIter) {
+  let x = x0.slice();
+  let f = F(x);
+  if (!f) return null;
+  const norm = (v) => Math.max(...v.map(Math.abs));
+  for (let it = 0; it < maxIter; it++) {
+    const fn0 = norm(f);
+    if (fn0 < tol) return x;
+    const n = x.length;
+    const J = [];
+    for (let i = 0; i < n; i++) J.push(new Array(n).fill(0));
+    for (let j = 0; j < n; j++) {
+      const h = 1e-7 * Math.max(1, Math.abs(x[j]));
+      const xp = x.slice(); xp[j] += h;
+      const fp = F(xp);
+      if (!fp) return null;
+      for (let i = 0; i < n; i++) J[i][j] = (fp[i] - f[i]) / h;
+    }
+    const dx = solve(J, f.map((v) => -v));
+    if (!dx) return null;
+    let a = 1, ok = false;
+    for (let k = 0; k < 25; k++) {
+      const xn = x.map((v, i) => v + a * dx[i]);
+      const fnew = F(xn);
+      if (fnew && norm(fnew) < fn0) { x = xn; f = fnew; ok = true; break; }
+      a *= 0.5;
+    }
+    if (!ok) return null;
+  }
+  return norm(f) < tol ? x : null;
+}
+
+// Binary demixing on the polymer / non-solvent edge (f2 = 0).
+// Unknowns: [f3 rich, ln f3 lean]. The lean phase can hold less than 1e-300 polymer, so its
+// logarithm is carried directly and exp() is only used where underflow to zero is harmless.
+function binaryEdge(n3, c13) {
+  const chiCrit = 0.5 * Math.pow(1 + 1 / Math.sqrt(n3), 2);
+  if (c13 <= chiCrit + 1e-4) return null;
+  const F = (x) => {
+    const r = x[0], lnl = x[1];
+    if (!(r > 0 && r < 1 && lnl < Math.log(r))) return null;
+    const l = Math.exp(lnl);
+    const m1r = Math.log(1 - r) + (1 - 1 / n3) * r + c13 * r * r;
+    const m1l = Math.log1p(-l) + (1 - 1 / n3) * l + c13 * l * l;
+    const m3r = Math.log(r) / n3 - (1 - 1 / n3) * (1 - r) + c13 * (1 - r) * (1 - r);
+    const m3l = lnl / n3 - (1 - 1 / n3) * (1 - l) + c13 * (1 - l) * (1 - l);
+    return [m1r - m1l, m3r - m3l];
+  };
+  for (const r0 of [0.95, 0.9, 0.8, 0.65, 0.5, 0.35, 0.2, 0.1]) {
+    for (const l0 of [-3000, -1200, -500, -200, -60, -30, -15, -8, -4, -2, -1]) {
+      const x = newton(F, [r0, l0], 1e-12, 80);
+      if (x && x[0] - Math.exp(x[1]) > 1e-3) return { rich: x[0], lean: Math.exp(x[1]), lnLean: x[1] };
+    }
+  }
+  return null;
+}
+
+// One tie-line at a fixed polymer fraction f3a in the polymer-rich phase.
+// Unknowns: [ln f2a, ln f2b, ln f3b]. The logarithms are passed straight into muFn.
+function tieAt(f3a, guess, n3, c12, c13, c23) {
+  const F = (x) => {
+    if (!(x[0] < 0 && x[1] < 0 && x[2] < Math.log(f3a))) return null;
+    const f2a = Math.exp(x[0]), f2b = Math.exp(x[1]), f3b = Math.exp(x[2]);
+    const f1a = 1 - f2a - f3a, f1b = 1 - f2b - f3b;
+    if (!(f1a > 0 && f1b > 0)) return null;
+    const A = muFn(f1a, f2a, f3a, n3, c12, c13, c23, x[0]);
+    const B = muFn(f1b, f2b, f3b, n3, c12, c13, c23, x[1], x[2]);
+    return [A[0] - B[0], A[1] - B[1], (A[2] - B[2]) / n3];
+  };
+  const x = newton(F, guess, 1e-10, 40);
+  if (!x) return null;
+  const f2a = Math.exp(x[0]), f2b = Math.exp(x[1]), f3b = Math.exp(x[2]);
+  const a = [1 - f2a - f3a, f2a, f3a];
+  const b = [1 - f2b - f3b, f2b, f3b];
+  if (a[0] <= 0 || b[0] <= 0) return null;
+  const len = Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+  if (len < 2e-3) return null;          // collapsed onto a single phase
+  return { a, b, x, len };
+}
+
+// Trace the binodal from the polymer / non-solvent edge to the critical point.
+// Returns { ties, curve, critical } or null when no gap starts on that edge.
+function traceBinodal(n3, c12, c13, c23) {
+  const edge = binaryEdge(n3, c13);
+  if (!edge) return null;
+  const ties = [];
+  let f3a = edge.rich;
+  // start just inside the triangle
+  let d = Math.min(0.01, 0.1 * (edge.rich - edge.lean));
+  let guess = [Math.log(d), Math.log(d), edge.lnLean];
+  let step = 0.01;
+  let first = null;
+  for (let k = 0; k < 6 && !first; k++) {
+    first = tieAt(edge.rich - d, guess, n3, c12, c13, c23);
+    if (!first) { d *= 0.3; guess = [Math.log(d), Math.log(d), guess[2]]; }
+  }
+  if (!first) return null;
+  // edge tie (f2 = 0) for completeness
+  ties.push({ a: [1 - edge.rich, 0, edge.rich], b: [1 - edge.lean, 0, edge.lean], len: edge.rich - edge.lean });
+  ties.push(first);
+  f3a = first.a[2];
+  guess = first.x;
+  let prevX = null;
+  while (f3a > 1e-4 && ties.length < 400) {
+    let next = null;
+    while (step >= 1e-5) {
+      // linear extrapolation of the unknowns improves the guess
+      let g = guess;
+      if (prevX) g = guess.map((v, i) => v + (v - prevX[i]) * Math.min(1, step / Math.max(1e-6, Math.abs(ties[ties.length - 1].a[2] - ties[ties.length - 2].a[2]))));
+      next = tieAt(f3a - step, g, n3, c12, c13, c23) || tieAt(f3a - step, guess, n3, c12, c13, c23);
+      if (next) break;
+      step *= 0.5;
+    }
+    if (!next) break;
+    prevX = guess;
+    ties.push(next);
+    f3a = next.a[2];
+    guess = next.x;
+    step = Math.min(step * 1.4, 0.03, 0.4 * next.len);  // finer steps as the tie-lines shorten
+    if (next.len < 6e-3) break;  // essentially at the critical point
+  }
+  const last = ties[ties.length - 1];
+  const critical = [0, 1, 2].map((i) => (last.a[i] + last.b[i]) / 2);
+  // closed binodal: rich branch (edge -> critical), then lean branch (critical -> edge)
+  const curve = ties.map((t) => t.a).concat([critical]).concat(ties.slice().reverse().map((t) => t.b));
+  return { ties, curve, critical };
+}
+
+function pointInPolygon(pt, poly) {
+  // pt, poly vertices in any consistent 2D projection [u, v]
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, yi] = poly[i], [xj, yj] = poly[j];
+    if ((yi > pt[1]) !== (yj > pt[1]) && pt[0] < ((xj - xi) * (pt[1] - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+
+// Tie-line through a two-phase composition p, plus the lever rule (volume share of the
+// polymer-rich phase). The bracketing tie-lines give a first estimate, which is then refined
+// by solving for the tie-line that passes exactly through p. Falls back to interpolation
+// if the refinement does not converge (very close to the critical point).
+function tieThrough(p, ties, n3, c12, c13, c23) {
+  const sideOf = (a, b) => (b[0] - a[0]) * (p[2] - a[2]) - (b[2] - a[2]) * (p[0] - a[0]);
+  const lever = (a, b) => {
+    const L = Math.hypot(a[0] - b[0], a[2] - b[2]);
+    const fr = L > 0 ? Math.hypot(p[0] - b[0], p[2] - b[2]) / L : 0.5;
+    return { a, b, fracRich: Math.max(0, Math.min(1, fr)) };
+  };
+  for (let i = 0; i < ties.length - 1; i++) {
+    const s0 = sideOf(ties[i].a, ties[i].b), s1 = sideOf(ties[i + 1].a, ties[i + 1].b);
+    if (!(s0 === 0 || s0 * s1 < 0)) continue;
+    const w = s0 === 0 ? 0 : s0 / (s0 - s1);
+    const interp = lever(
+      [0, 1, 2].map((k) => ties[i].a[k] + w * (ties[i + 1].a[k] - ties[i].a[k])),
+      [0, 1, 2].map((k) => ties[i].b[k] + w * (ties[i + 1].b[k] - ties[i].b[k])));
+    if (n3 === undefined) return interp;
+    // refine: bisection on the rich-phase polymer fraction between the two bracketing ties
+    let hi = ties[i].a[2], lo = ties[i + 1].a[2], sHi = s0;
+    let xHi = ties[i].x || ties[i + 1].x, xLo = ties[i + 1].x || ties[i].x;
+    if (!xHi || !xLo) return interp;
+    let best = null;
+    for (let it = 0; it < 50; it++) {
+      const m = 0.5 * (hi + lo);
+      const guess = xHi.map((v, k) => 0.5 * (v + xLo[k]));
+      const t = tieAt(m, guess, n3, c12, c13, c23) || tieAt(m, xLo, n3, c12, c13, c23) || tieAt(m, xHi, n3, c12, c13, c23);
+      if (!t) return best || interp;
+      best = lever(t.a, t.b);
+      const sm = sideOf(t.a, t.b);
+      if (Math.abs(sm) < 1e-13 || hi - lo < 1e-11) break;
+      if ((sm < 0) === (sHi < 0)) { hi = m; sHi = sm; xHi = t.x; } else { lo = m; xLo = t.x; }
+    }
+    return best || interp;
+  }
+  return null;
+}
+
+// Minimum distance from composition p to the binodal curve (piecewise linear).
+function distanceToCurve(p, curve) {
+  let best = Infinity;
+  for (let i = 0; i < curve.length - 1; i++) {
+    const a = curve[i], b = curve[i + 1];
+    const u = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
+    const w = [p[0] - a[0], p[1] - a[1], p[2] - a[2]];
+    const uu = u[0] * u[0] + u[1] * u[1] + u[2] * u[2];
+    let t = uu > 0 ? (u[0] * w[0] + u[1] * w[1] + u[2] * w[2]) / uu : 0;
+    t = Math.max(0, Math.min(1, t));
+    const d = Math.hypot(w[0] - t * u[0], w[1] - t * u[1], w[2] - t * u[2]);
+    if (d < best) best = d;
+  }
+  return best;
+}
+
+// Local stability: the Hessian must be positive definite (G22 > 0 and det > 0).
+function locallyStable(f1, f2, f3, n3, c12, c13, c23) {
+  if (f1 <= 0 || f2 <= 0 || f3 <= 0) return true;
+  const G22 = 1 / f1 + 1 / f2 - 2 * c12;
+  return G22 > 0 && spinodalDet(f1, f2, f3, n3, c12, c13, c23) > 0;
+}
+
+// Projection used for 2D geometry: [non-solvent, polymer].
+function proj(p) { return [p[0], p[2]]; }
+
+function inTwoPhase(p, curve) {
+  return pointInPolygon(proj(p), curve.map(proj));
+}
+
+// Cloud point along a titration path: start from a binary solvent/polymer solution with
+// polymer volume fraction r (on a non-solvent-free basis) and add non-solvent.
+// Returns the non-solvent volume fraction at which the path first enters the two-phase region.
+function cloudPoint(r, curve) {
+  const at = (t) => [t, (1 - t) * (1 - r), (1 - t) * r];
+  let prev = 0;
+  for (let t = 0.0025; t < 0.999; t += 0.0025) {
+    if (inTwoPhase(at(t), curve)) {
+      let lo = prev, hi = t;
+      for (let k = 0; k < 40; k++) {
+        const m = 0.5 * (lo + hi);
+        if (inTwoPhase(at(m), curve)) hi = m; else lo = m;
+      }
+      return 0.5 * (lo + hi);
+    }
+    prev = t;
+  }
+  return null;
+}
+
+// Volume fractions <-> weight fractions, given densities [rho_ns, rho_s, rho_p].
+function volToWt(v, rho) {
+  const m = v.map((x, i) => x * rho[i]); const s = m[0] + m[1] + m[2];
+  return m.map((x) => x / s);
+}
+function wtToVol(w, rho) {
+  const v = w.map((x, i) => x / rho[i]); const s = v[0] + v[1] + v[2];
+  return v.map((x) => x / s);
+}
+
+
+
+// ---------- materials ----------
+// Densities in g/cm3 at 25 C. Chain lengths in units of the non-solvent molar volume.
+const POLYMERS = {
+  Torlon: { label: 'Torlon 4000HV (polyamide-imide)', n3: 600, rho: 1.40 },
+  PVDF:   { label: 'PVDF', n3: 500, rho: 1.78 },
+  PES:    { label: 'PES (polyethersulfone)', n3: 400, rho: 1.37 },
+  PSf:    { label: 'PSf (polysulfone)', n3: 350, rho: 1.24 },
+  PAN:    { label: 'PAN (polyacrylonitrile)', n3: 300, rho: 1.18 },
+  CA:     { label: 'CA (cellulose acetate)', n3: 450, rho: 1.30 },
+  PI:     { label: 'Polyimide (Matrimid type)', n3: 600, rho: 1.20 },
+};
+const SOLVENTS = {
+  NMP:     { label: 'NMP', rho: 1.028 },
+  DMF:     { label: 'DMF', rho: 0.944 },
+  DMAc:    { label: 'DMAc', rho: 0.937 },
+  DMSO:    { label: 'DMSO', rho: 1.100 },
+  THF:     { label: 'THF', rho: 0.889 },
+  acetone: { label: 'Acetone', rho: 0.784 },
+};
+const NONSOLVENTS = {
+  IPA:      { label: '2-propanol', rho: 0.781 },
+  water:    { label: 'Water', rho: 0.997 },
+  methanol: { label: 'Methanol', rho: 0.792 },
+  ethanol:  { label: 'Ethanol', rho: 0.789 },
+};
+// chi12 [non-solvent][solvent]. The 2-propanol row is from Hansen solubility parameters; the rest are rough estimates.
+const CHI12 = {
+  IPA:      { NMP: 1.10, DMF: 0.73, DMAc: 0.55, DMSO: 1.33, THF: 0.58, acetone: 0.83 },
+  water:    { NMP: 1.10, DMF: 1.20, DMAc: 1.30, DMSO: 0.90, THF: 1.60, acetone: 1.50 },
+  methanol: { NMP: 0.40, DMF: 0.40, DMAc: 0.50, DMSO: 0.30, THF: 0.50, acetone: 0.30 },
+  ethanol:  { NMP: 0.40, DMF: 0.40, DMAc: 0.40, DMSO: 0.40, THF: 0.40, acetone: 0.30 },
+};
+// chi13 [non-solvent][polymer]. 2-propanol with Torlon is fitted. The water row is set between 2 and 3 so that
+// cloud points land at a few to about 20 wt % water; it is not fitted. Everything else is a rough estimate.
+const CHI13 = {
+  IPA:      { Torlon: 1.53, PVDF: 1.10, PES: 1.00, PSf: 1.00, PAN: 1.40, CA: 0.70, PI: 1.10 },
+  water:    { Torlon: 3.00, PVDF: 2.80, PES: 2.80, PSf: 3.00, PAN: 2.60, CA: 2.00, PI: 3.00 },
+  methanol: { Torlon: 1.50, PVDF: 1.00, PES: 1.00, PSf: 1.20, PAN: 1.10, CA: 0.60, PI: 1.10 },
+  ethanol:  { Torlon: 1.50, PVDF: 1.00, PES: 1.00, PSf: 1.10, PAN: 1.30, CA: 0.60, PI: 1.10 },
+};
+// chi23 [solvent][polymer]. NMP and DMF with Torlon are fitted.
+const CHI23 = {
+  NMP:     { Torlon: 0.35, PVDF: 0.25, PES: 0.20, PSf: 0.25, PAN: 0.20, CA: 0.35, PI: 0.25 },
+  DMF:     { Torlon: 0.49, PVDF: 0.30, PES: 0.30, PSf: 0.30, PAN: 0.20, CA: 0.35, PI: 0.30 },
+  DMAc:    { Torlon: 0.45, PVDF: 0.30, PES: 0.25, PSf: 0.30, PAN: 0.25, CA: 0.35, PI: 0.30 },
+  DMSO:    { Torlon: 0.50, PVDF: 0.30, PES: 0.30, PSf: 0.35, PAN: 0.15, CA: 0.30, PI: 0.30 },
+  THF:     { Torlon: 0.90, PVDF: 0.45, PES: 0.40, PSf: 0.30, PAN: 0.80, CA: 0.60, PI: 0.50 },
+  acetone: { Torlon: 1.00, PVDF: 0.50, PES: 0.55, PSf: 0.50, PAN: 0.70, CA: 0.35, PI: 0.60 },
+};
+// Published cloud points (Ishaque 2020, Figure 36), read from the figure. Weight fractions [non-solvent, solvent, polymer].
+const CLOUD_POINTS = {"NMP": [[0.2369, 0.7395, 0.0237], [0.216, 0.7138, 0.0702], [0.2027, 0.6983, 0.099], [0.1941, 0.6894, 0.1166]], "DMF": [[0.0857, 0.8948, 0.0195], [0.0853, 0.8745, 0.0402], [0.079, 0.8385, 0.0825], [0.0885, 0.7888, 0.1227], [0.0946, 0.7444, 0.161]]};
+const CALIBRATED = { 'Torlon|NMP|IPA': CLOUD_POINTS.NMP, 'Torlon|DMF|IPA': CLOUD_POINTS.DMF };
+
+// ---------- state ----------
+const state = { units: 'wt', zoom: 'corner', custom: false, test: null };
+const $ = (id) => document.getElementById(id);
+const sys = () => ({ p: $('sel-p').value, s: $('sel-s').value, n: $('sel-n').value });
+const sysKey = () => { const k = sys(); return `${k.p}|${k.s}|${k.n}`; };
+const rho = () => { const k = sys(); return [NONSOLVENTS[k.n].rho, SOLVENTS[k.s].rho, POLYMERS[k.p].rho]; };
+const num = (id, fallback) => { const v = parseFloat($(id).value); return isFinite(v) ? v : fallback; };
+const params = () => ({
+  c12: Math.min(2.5, Math.max(0, num('c12', 0))),
+  c13: Math.min(3.5, Math.max(0.3, num('c13', 1))),
+  c23: Math.min(1, Math.max(-0.5, num('c23', 0))),
+  n3: Math.min(2000, Math.max(50, num('n3', 300))),
+});
+const chiCrit = (n3) => 0.5 * Math.pow(1 + 1 / Math.sqrt(n3), 2);
+const unitLabel = () => (state.units === 'wt' ? 'wt %' : 'vol %');
+
+// ---------- geometry ----------
+const W = 640, SIDE = 452, BASE = 500;
+const VS = [W / 2 - SIDE / 2, BASE];                // solvent, bottom left
+const VN = [W / 2 + SIDE / 2, BASE];                // non-solvent, bottom right
+const VP = [W / 2, BASE - SIDE * Math.sqrt(3) / 2]; // polymer, top
+const scale = () => (state.zoom === 'corner' ? 0.5 : 1);
+function localXY(lS, lN, lP) {
+  return [lS * VS[0] + lN * VN[0] + lP * VP[0], lS * VS[1] + lN * VN[1] + lP * VP[1]];
+}
+function dispXY(d) { const s = scale(); const lN = d[0] / s, lP = d[2] / s; return localXY(1 - lN - lP, lN, lP); }
+const toDisp = (v) => (state.units === 'wt' ? volToWt(v, rho()) : v);
+const fromDisp = (d) => (state.units === 'wt' ? wtToVol(d, rho()) : d);
+const volXY = (v) => dispXY(toDisp(v));
+function xyToLocal(x, y) {
+  const [x1, y1] = VS, [x2, y2] = VN, [x3, y3] = VP;
+  const det = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3);
+  const lS = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / det;
+  const lN = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / det;
+  return [lS, lN, 1 - lS - lN];
+}
+
+// ---------- svg helpers ----------
+const SVGNS = 'http://www.w3.org/2000/svg';
+const FONT = "'Times New Roman', Times, serif";
+const plot = $('plot');
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  (parent || plot).appendChild(e);
+  return e;
+}
+function txt(x, y, s, attrs, parent) {
+  const t = el('text', Object.assign({ x, y, 'font-family': FONT, 'font-size': 13, fill: '#000000' }, attrs || {}), parent);
+  t.textContent = s;
+  return t;
+}
+const pathOf = (pts, close) => pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ') + (close ? ' Z' : '');
+const pct = (x) => (100 * x).toFixed(1);
+
+// ---------- drawing ----------
+function drawFrame(names) {
+  const s = scale();
+  const unit = unitLabel();
+  const defs = el('defs', {});
+  const cp = el('clipPath', { id: 'tri-clip' }, defs);
+  el('polygon', { points: `${VS} ${VN} ${VP}` }, cp);
+  el('rect', { x: 0, y: 78, width: W, height: 512, fill: '#ffffff' });
+  const grid = el('g', { stroke: '#d0d0d0', 'stroke-width': 0.6 });
+  for (let k = 1; k < 10; k++) {
+    const f = k / 10;
+    const ln = (a, b) => { const A = localXY(...a), B = localXY(...b); el('line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1] }, grid); };
+    ln([1 - f, f, 0], [0, f, 1 - f]);   // constant non-solvent
+    ln([1 - f, 0, f], [0, 1 - f, f]);   // constant polymer
+    ln([f, 1 - f, 0], [f, 0, 1 - f]);   // constant solvent
+  }
+  for (let k = 2; k <= 8; k += 2) {
+    const f = k / 10;
+    let p = localXY(1 - f, f, 0); txt(p[0], p[1] + 17, Math.round(100 * s * f), { 'text-anchor': 'middle', 'font-size': 12 });
+    p = localXY(0, 1 - f, f); txt(p[0] + 8, p[1] + 4, Math.round(100 * s * f), { 'text-anchor': 'start', 'font-size': 12 });
+    p = localXY(1 - f, 0, f); txt(p[0] - 8, p[1] + 4, Math.round(100 * (1 - s * f)), { 'text-anchor': 'end', 'font-size': 12 });
+  }
+  const mid = (A, B) => [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+  const b = mid(VS, VN);
+  txt(b[0], b[1] + 38, `${names.n} (non-solvent), ${unit}`, { 'text-anchor': 'middle' });
+  const l = mid(VS, VP); const lx = l[0] - 0.866 * 38, ly = l[1] - 0.5 * 38;
+  txt(lx, ly, `${names.s} (solvent), ${unit}`, { 'text-anchor': 'middle', transform: `rotate(-60 ${lx} ${ly})` });
+  const r = mid(VP, VN); const rx = r[0] + 0.866 * 38, ry = r[1] - 0.5 * 38;
+  txt(rx, ry, `${names.p} (polymer), ${unit}`, { 'text-anchor': 'middle', transform: `rotate(60 ${rx} ${ry})` });
+  txt(VS[0] - 6, VS[1] + 17, '100', { 'text-anchor': 'end', 'font-size': 12 });
+  txt(VP[0], VP[1] - 9, s === 1 ? '100' : '50', { 'text-anchor': 'middle', 'font-size': 12 });
+  txt(VN[0] + 6, VN[1] + 17, s === 1 ? '100' : '50', { 'text-anchor': 'start', 'font-size': 12 });
+}
+
+function spinodalSegments(P) {
+  const M = 150, s = scale();
+  const idx = (i, j) => i * (M + 1) + j;
+  const val = new Float64Array((M + 1) * (M + 1)).fill(NaN);
+  for (let i = 0; i <= M; i++) {
+    for (let j = 0; j <= M - i; j++) {
+      const lN = Math.max(i / M, 1e-6), lP = Math.max(j / M, 1e-6);
+      const v = fromDisp([s * lN, Math.max(1 - s * (lN + lP), 1e-9), s * lP]);
+      val[idx(i, j)] = spinodalDet(v[0], v[1], v[2], P.n3, P.c12, P.c13, P.c23);
+    }
+  }
+  const segs = [];
+  const tri = (a, b, c) => {
+    const pts = [];
+    const e = (p, q) => {
+      if (!isFinite(p[2]) || !isFinite(q[2])) return;
+      if ((p[2] < 0) !== (q[2] < 0)) { const t = p[2] / (p[2] - q[2]); pts.push([p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])]); }
+    };
+    e(a, b); e(b, c); e(c, a);
+    if (pts.length === 2) segs.push(pts);
+  };
+  const V = (i, j) => [i / M, j / M, val[idx(i, j)]];
+  for (let i = 0; i < M; i++) {
+    for (let j = 0; j < M - i; j++) {
+      tri(V(i, j), V(i + 1, j), V(i, j + 1));
+      if (i + j + 2 <= M) tri(V(i + 1, j), V(i + 1, j + 1), V(i, j + 1));
+    }
+  }
+  return segs.map((sg) => sg.map(([lN, lP]) => localXY(1 - lN - lP, lN, lP)));
+}
+
+function pickTies(B) {
+  const t = B.ties.filter((x, i) => i > 0 && x.len > 0.03);
+  if (!t.length) return [];
+  const out = [];
+  const n = Math.min(7, t.length);
+  for (let k = 0; k < n; k++) out.push(t[Math.round((k * (t.length - 1)) / Math.max(1, n - 1))]);
+  return out;
+}
+
+const insideView = (v) => { const d = toDisp(v), s = scale(); return d[0] / s >= 0.02 && d[2] / s >= 0.02 && 1 - (d[0] + d[2]) / s >= 0.02; };
+
+function classify(v, P, B) {
+  if (!locallyStable(v[0], v[1], v[2], P.n3, P.c12, P.c13, P.c23)) return 'unstable';
+  if (B && inTwoPhase(v, B.curve)) return 'meta';
+  return 'stable';
+}
+
+function redraw() {
+  const P = params();
+  const k = sys();
+  const names = { p: k.p === 'Torlon' ? 'Torlon' : POLYMERS[k.p].label.split(' (')[0], s: SOLVENTS[k.s].label, n: NONSOLVENTS[k.n].label };
+  while (plot.firstChild) plot.removeChild(plot.firstChild);
+  drawFrame(names);
+  const g = el('g', { 'clip-path': 'url(#tri-clip)' });
+
+  const B = traceBinodal(P.n3, P.c12, P.c13, P.c23);
+  const closed = !!B && B.ties[B.ties.length - 1].len < 0.03;
+  if (B) {
+    el('path', { d: pathOf(B.curve.map(volXY), true), fill: '#e8e8e8', stroke: 'none' }, g);
+    for (const t of pickTies(B)) {
+      const a = volXY(t.a), b = volXY(t.b);
+      el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: '#909090', 'stroke-width': 0.8 }, g);
+    }
+  }
+  const spin = spinodalSegments(P);
+  if (spin.length) el('path', { d: spin.map((sg) => pathOf(sg)).join(' '), fill: 'none', stroke: '#0000cc', 'stroke-width': 1.3, 'stroke-dasharray': '6 4' }, g);
+  const label = (p, s) => txt(p[0], p[1], s, { 'text-anchor': 'middle', 'font-size': 14, 'font-style': 'italic', stroke: '#ffffff', 'stroke-width': 3, 'paint-order': 'stroke', 'stroke-linejoin': 'round' }, g);
+  if (B) {
+    if (closed) el('path', { d: pathOf(B.curve.map(volXY)), fill: 'none', stroke: '#cc0000', 'stroke-width': 1.7, 'stroke-linejoin': 'round' }, g);
+    else {
+      el('path', { d: pathOf(B.ties.map((t) => volXY(t.a))), fill: 'none', stroke: '#cc0000', 'stroke-width': 1.7 }, g);
+      el('path', { d: pathOf(B.ties.map((t) => volXY(t.b))), fill: 'none', stroke: '#cc0000', 'stroke-width': 1.7 }, g);
+    }
+    // "two phases" goes on the visible tie-line midpoint furthest from the critical point, so the labels never collide
+    const mids = pickTies(B).map((t) => [0, 1, 2].map((i) => 0.5 * (t.a[i] + t.b[i]))).filter(insideView);
+    if (mids.length) {
+      const c = volXY(B.critical);
+      const far = mids.map(volXY).reduce((best, p) => (Math.hypot(p[0] - c[0], p[1] - c[1]) > Math.hypot(best[0] - c[0], best[1] - c[1]) ? p : best));
+      label([far[0], far[1] + 4], 'two phases');
+    }
+    if (closed) {
+      const c = volXY(B.critical);
+      el('circle', { cx: c[0], cy: c[1], r: 3.2, fill: '#000000' }, g);
+      txt(c[0] - 7, c[1] - 6, 'critical point', { 'text-anchor': 'end', 'font-size': 12, 'font-style': 'italic', stroke: '#ffffff', 'stroke-width': 3, 'paint-order': 'stroke' }, g);
+    }
+  }
+  for (const cand of [[0.05, 0.42], [0.04, 0.6], [0.03, 0.25], [0.02, 0.8]]) {
+    const s = scale();
+    const d = [s * cand[0], 1 - s * (cand[0] + cand[1]), s * cand[1]];
+    const v = fromDisp(d);
+    if (!(B && inTwoPhase(v, B.curve)) && locallyStable(v[0], v[1], v[2], P.n3, P.c12, P.c13, P.c23)) {
+      const p = dispXY(d);
+      txt(p[0] + 6, p[1], 'one phase', { 'text-anchor': 'start', 'font-size': 14, 'font-style': 'italic', stroke: '#ffffff', 'stroke-width': 3, 'paint-order': 'stroke' }, g);
+      break;
+    }
+  }
+  const data = CALIBRATED[sysKey()];
+  if (data) {
+    for (const w of data) {
+      const p = dispXY(state.units === 'wt' ? w : wtToVol(w, rho()));
+      el('rect', { x: p[0] - 3.5, y: p[1] - 3.5, width: 7, height: 7, fill: '#ffffff', stroke: '#000000', 'stroke-width': 1.2 }, g);
+    }
+  }
+  if (state.test) drawTest(g, P, B);
+  el('polygon', { points: `${VS} ${VN} ${VP}`, fill: 'none', stroke: '#000000', 'stroke-width': 1 });
+  updateCaption(names, B, closed, spin.length > 0, !!data);
+  updateReadout(P, B, closed);
+  updateResult(P, B);
+}
+
+function drawTest(g, P, B) {
+  const v = state.test;
+  if (classify(v, P, B) !== 'stable' && B) {
+    const t = tieThrough(v, B.ties, P.n3, P.c12, P.c13, P.c23);
+    if (t) {
+      const a = volXY(t.a), b = volXY(t.b);
+      el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: '#000000', 'stroke-width': 1 }, g);
+      for (const q of [a, b]) el('circle', { cx: q[0], cy: q[1], r: 2.5, fill: '#000000' }, g);
+    }
+  }
+  const p = volXY(v);
+  el('line', { x1: p[0] - 6, y1: p[1], x2: p[0] + 6, y2: p[1], stroke: '#000000', 'stroke-width': 1.6 }, g);
+  el('line', { x1: p[0], y1: p[1] - 6, x2: p[0], y2: p[1] + 6, stroke: '#000000', 'stroke-width': 1.6 }, g);
+}
+
+function updateCaption(names, B, closed, hasSpin, hasData) {
+  const parts = [`<b>Figure 1.</b> ${names.p} / ${names.s} / ${names.n}, in ${state.units === 'wt' ? 'weight' : 'volume'} percent.`];
+  if (B) parts.push('Red line: binodal. Grey: two-phase region. Thin grey lines: tie-lines.');
+  if (hasSpin) parts.push('Blue dashed line: spinodal.');
+  if (closed) parts.push('Dot: critical point.');
+  if (hasData) parts.push('Squares: measured cloud points.');
+  if (state.test) parts.push('Cross: your composition, with its tie-line if it splits.');
+  $('caption').innerHTML = parts.join(' ');
+}
+
+const fmtComp = (v) => { const d = toDisp(v); return [pct(d[2]), pct(d[1]), pct(d[0])]; };
+
+function updateResult(P, B) {
+  const box = $('result');
+  const v = state.test;
+  if (!v) { box.innerHTML = '<p>Enter a composition above or click on the diagram.</p>'; return; }
+  const u = unitLabel();
+  const [pp, ss, nn] = fmtComp(v);
+  const cls = classify(v, P, B);
+  let html = `<p><b>Composition:</b> ${pp} ${u} polymer, ${nn} ${u} non-solvent, ${ss} ${u} solvent.</p>`;
+  if (cls === 'stable') {
+    html += '<p><b>Result:</b> one phase. The composition is outside the binodal, so the solution is stable.</p>';
+  } else {
+    html += cls === 'unstable'
+      ? '<p><b>Result:</b> unstable. The composition is inside the spinodal and separates spontaneously.</p>'
+      : '<p><b>Result:</b> metastable. The composition is between the binodal and the spinodal. It separates by nucleation and growth, which can be delayed.</p>';
+    const t = B ? tieThrough(v, B.ties, P.n3, P.c12, P.c13, P.c23) : null;
+    if (t) {
+      const r = rho(), aw = volToWt(t.a, r), bw = volToWt(t.b, r), pw = volToWt(v, r);
+      const Lw = Math.hypot(aw[0] - bw[0], aw[2] - bw[2]);
+      const massRich = Lw > 0 ? Math.min(1, Math.hypot(pw[0] - bw[0], pw[2] - bw[2]) / Lw) : 0.5;
+      const a = fmtComp(t.a), b = fmtComp(t.b);
+      html += `<div class="scroll"><table class="data"><tr><th>${u}</th><th>polymer</th><th>solvent</th><th>non-solvent</th></tr>`
+            + `<tr><td>polymer-rich phase</td><td>${a[0]}</td><td>${a[1]}</td><td>${a[2]}</td></tr>`
+            + `<tr><td>polymer-lean phase</td><td>${b[0]}</td><td>${b[1]}</td><td>${b[2]}</td></tr></table></div>`
+            + `<p>Lever rule: about ${Math.round(100 * t.fracRich)} % of the volume (${Math.round(100 * massRich)} % of the mass) becomes the polymer-rich phase.</p>`;
+    }
+  }
+  box.innerHTML = html;
+}
+
+function measuredRms(B, data) {
+  if (!B || !data) return null;
+  const r = rho();
+  let s = 0;
+  for (const w of data) {
+    const v = wtToVol(w, r);
+    const rr = v[2] / (v[1] + v[2]);
+    const t = cloudPoint(rr, B.curve);
+    if (t == null) return null;
+    const m = volToWt([t, (1 - t) * (1 - rr), (1 - t) * rr], r);
+    s += Math.pow(100 * (m[0] - w[0]), 2);
+  }
+  return Math.sqrt(s / data.length);
+}
+
+function updateReadout(P, B, closed) {
+  const out = [];
+  const u = unitLabel();
+  const cc = chiCrit(P.n3);
+  if (P.c12 > 2) out.push(`Note: with χ<sub>12</sub> above 2 the solvent and non-solvent separate on their own in this model. That second two-phase region is not traced.`);
+  if (P.c23 > cc) out.push(`Note: with χ<sub>23</sub> above ${cc.toFixed(2)} the polymer and the solvent alone would already separate, so this solvent is too poor for casting.`);
+  if (!B) {
+    out.push(P.c13 <= cc
+      ? `No two-phase region starts on the polymer / non-solvent side, because χ<sub>13</sub> is below ${cc.toFixed(2)}. A closed region inside the triangle is still possible with other values. If a spinodal is drawn, the area inside it is unstable.`
+      : 'Note: no two-phase region was found starting on the polymer / non-solvent side.');
+  } else if (closed) {
+    const c = toDisp(B.critical);
+    out.push(`Critical point: ${pct(c[2])} ${u} polymer, ${pct(c[0])} ${u} non-solvent.`);
+  } else {
+    out.push('Note: the calculation stopped before the critical point, so the two-phase region is drawn only as far as it was solved.');
+  }
+  const data = CALIBRATED[sysKey()];
+  const e = measuredRms(B, data);
+  if (e != null) out.push(`Deviation from the ${data.length} measured cloud points (RMS): ${e.toFixed(1)} wt % of non-solvent.`);
+  $('readout').innerHTML = out.map((s) => `<p>${s}</p>`).join('');
+}
+
+function updateStatus() {
+  const cal = !!CALIBRATED[sysKey()];
+  let s;
+  if (state.custom) s = 'You have changed the parameters.' + (cal ? ' The squares still show the measured cloud points.' : '');
+  else if (cal) s = 'The parameters for this system are fitted to published cloud points (squares in the figure, see the fit section below).';
+  else s = 'The parameters for this system are rough estimates. The shape of the diagram is meaningful, the exact numbers are not.';
+  $('status').textContent = s;
+}
+
+function syncInputs() {
+  const u = unitLabel();
+  document.querySelectorAll('.unit').forEach((x) => (x.textContent = u));
+  if (state.test) { const d = toDisp(state.test); $('t-p').value = pct(d[2]); $('t-n').value = pct(d[0]); }
+  const p = parseFloat($('t-p').value) || 0, n = parseFloat($('t-n').value) || 0;
+  $('t-s').textContent = `Solvent is the rest: ${(100 - p - n).toFixed(1)} ${u}.`;
+}
+
+function applySystem() {
+  const k = sys();
+  $('c12').value = CHI12[k.n][k.s].toFixed(2);
+  $('c13').value = CHI13[k.n][k.p].toFixed(2);
+  $('c23').value = CHI23[k.s][k.p].toFixed(2);
+  $('n3').value = POLYMERS[k.p].n3;
+  state.custom = false;
+}
+
+function fill(id, dict, pick) {
+  const sel = $(id);
+  for (const [k, v] of Object.entries(dict)) {
+    const o = document.createElement('option'); o.value = k; o.textContent = v.label; if (k === pick) o.selected = true; sel.appendChild(o);
+  }
+}
+
+function setTest(d) {
+  if (d.some((x) => x < 0 || x > 1)) return;
+  state.test = fromDisp(d.map((x) => Math.max(x, 1e-9)));
+  syncInputs();
+  redraw();
+}
+
+// ---------- fit tables (fixed fitted parameters, independent of the form) ----------
+function buildValidation() {
+  const fits = { NMP: { c12: 1.10, c23: 0.35, rho: [0.781, 1.028, 1.40] }, DMF: { c12: 0.73, c23: 0.49, rho: [0.781, 0.944, 1.40] } };
+  const c13 = 1.53, n3 = 600;
+  $('fit-c13').textContent = c13.toFixed(2);
+  $('fit-c23').textContent = `${fits.NMP.c23.toFixed(2)} (NMP), ${fits.DMF.c23.toFixed(2)} (DMF)`;
+  const summary = [];
+  let html = '';
+  for (const s of ['NMP', 'DMF']) {
+    const F = fits[s];
+    const B = traceBinodal(n3, F.c12, c13, F.c23);
+    let rows = '', sq = 0, maxd = 0, maxAt = null, maxSign = 0;
+    for (const w of CLOUD_POINTS[s]) {
+      const v = wtToVol(w, F.rho);
+      const rr = v[2] / (v[1] + v[2]);
+      const t = B ? cloudPoint(rr, B.curve) : null;
+      const m = t == null ? null : volToWt([t, (1 - t) * (1 - rr), (1 - t) * rr], F.rho);
+      const dm = m ? 100 * (m[0] - w[0]) : NaN;
+      if (isFinite(dm)) { sq += dm * dm; if (Math.abs(dm) > maxd) { maxd = Math.abs(dm); maxAt = w[2]; maxSign = Math.sign(dm); } }
+      rows += `<tr><td>${pct(w[2])}</td><td>${pct(w[0])}</td><td>${m ? pct(m[0]) : 'n/a'}</td><td>${isFinite(dm) ? (dm > 0 ? '+' : '') + dm.toFixed(1) : ''}</td></tr>`;
+    }
+    const rms = Math.sqrt(sq / CLOUD_POINTS[s].length);
+    html += `<div class="scroll"><table class="data"><caption>Torlon / ${s} / 2-propanol</caption>`
+          + `<tr><th>Torlon, wt %</th><th>2-propanol to cloud, measured</th><th>model</th><th>difference</th></tr>${rows}`
+          + `<tr><td colspan="3">RMS deviation</td><td>${rms.toFixed(1)}</td></tr></table></div>`;
+    summary.push({ s, maxd, maxAt, maxSign });
+  }
+  $('val-tables').innerHTML = html;
+  const [a, b] = summary;
+  const where = (x) => `${pct(x.maxAt)} wt % Torlon, where the model ${x.maxSign > 0 ? 'needs more' : 'needs less'} 2-propanol than measured`;
+  $('val-summary').textContent = `Each row compares the 2-propanol content at which the solution clouds, measured and calculated, at the same ratio of Torlon to solvent. With NMP the model is within ${a.maxd.toFixed(1)} wt % of every point; the largest difference is at ${where(a)}. With DMF it is within ${b.maxd.toFixed(1)} wt %; the largest difference is at ${where(b)}.`;
+}
+
+// ---------- events ----------
+fill('sel-p', POLYMERS, 'Torlon');
+fill('sel-s', SOLVENTS, 'NMP');
+fill('sel-n', NONSOLVENTS, 'IPA');
+applySystem();
+
+['sel-p', 'sel-s', 'sel-n'].forEach((id) => $(id).addEventListener('change', () => {
+  applySystem();
+  const cal = !!CALIBRATED[sysKey()];
+  state.zoom = cal ? 'corner' : 'full';
+  $(cal ? 'z-corner' : 'z-full').checked = true;
+  updateStatus(); syncInputs(); redraw();
+}));
+['c12', 'c13', 'c23', 'n3'].forEach((id) => $(id).addEventListener('change', () => { state.custom = true; updateStatus(); redraw(); }));
+$('form').addEventListener('submit', (ev) => { ev.preventDefault(); redraw(); });
+$('reset').addEventListener('click', () => { applySystem(); updateStatus(); redraw(); });
+document.querySelectorAll('input[name="units"]').forEach((r) => r.addEventListener('change', () => { state.units = r.value; syncInputs(); redraw(); }));
+document.querySelectorAll('input[name="zoom"]').forEach((r) => r.addEventListener('change', () => { state.zoom = r.value; redraw(); }));
+['t-p', 't-n'].forEach((id) => $(id).addEventListener('input', () => {
+  const p = parseFloat($('t-p').value) || 0, n = parseFloat($('t-n').value) || 0;
+  $('t-s').textContent = `Solvent is the rest: ${(100 - p - n).toFixed(1)} ${unitLabel()}.`;
+}));
+$('t-go').addEventListener('click', () => {
+  const p = (parseFloat($('t-p').value) || 0) / 100, n = (parseFloat($('t-n').value) || 0) / 100;
+  if (p < 0 || n < 0 || p + n >= 1) { $('result').innerHTML = '<p>Polymer and non-solvent must add up to less than 100 %, so that some solvent is left.</p>'; return; }
+  setTest([n, 1 - p - n, p]);
+});
+plot.addEventListener('click', (ev) => {
+  const ctm = plot.getScreenCTM();
+  if (!ctm) return;
+  const pt = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(ctm.inverse());
+  const [lS, lN, lP] = xyToLocal(pt.x, pt.y);
+  if (lS < 0 || lN < 0 || lP < 0) return;
+  const s = scale();
+  setTest([s * lN, 1 - s * (lN + lP), s * lP]);
+});
+
+// Example composition on load: 10 wt % Torlon, 30 wt % 2-propanol.
+state.test = wtToVol([0.30, 0.60, 0.10], rho());
+updateStatus();
+syncInputs();
+buildValidation();
+redraw();
+})();
+</script>
+
+</body></html>
