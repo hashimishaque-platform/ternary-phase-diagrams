@@ -1,0 +1,14 @@
+# Cloud points of Torlon 4000HV with 2-propanol as non-solvent, read from Figure 36 of
+# Ishaque, H. (2020). Development of novel polymeric/inorganic composite membranes for the application
+# in gas phase membrane reactors. Master's thesis, Technische Universität Hamburg. https://publications.hereon.de/id/38756/
+# Weight fractions. Reading error about +/- 0.005 (0.5 wt %). These nine points are the only measured data in this project.
+solvent,nonsolvent_wt,solvent_wt,polymer_wt
+NMP,0.2369,0.7395,0.0237
+NMP,0.216,0.7138,0.0702
+NMP,0.2027,0.6983,0.099
+NMP,0.1941,0.6894,0.1166
+DMF,0.0857,0.8948,0.0195
+DMF,0.0853,0.8745,0.0402
+DMF,0.079,0.8385,0.0825
+DMF,0.0885,0.7888,0.1227
+DMF,0.0946,0.7444,0.161
