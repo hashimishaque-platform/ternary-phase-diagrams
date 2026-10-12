@@ -1,4 +1,9 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Flory-Huggins ternary phase diagrams for polymer, solvent and non-solvent systems, with binodal, spinodal and tie-lines.">
 <title>Ternary Phase Diagram</title>
 <style>
 :root { color-scheme: light; }
@@ -44,10 +49,11 @@ table.data caption { text-align: left; font-weight: bold; padding-bottom: 4px; }
 pre { font-size: 14px; overflow-x: auto; margin: 0 0 10px 0; }
 #result p { margin: 0 0 6px 0; }
 </style>
-
+</head>
+<body>
 <div class="page">
 
-<p class="small"><a href="/" target="_blank" rel="noopener">Hashim Ishaque</a> &gt; Ternary phase diagrams</p>
+<p class="small"><a href="/">Hashim Ishaque</a> &gt; Ternary phase diagrams</p>
 
 <h1>Ternary phase diagrams for polymer / solvent / non-solvent systems</h1>
 <p class="text">
@@ -55,6 +61,13 @@ This page computes Flory-Huggins phase diagrams: the binodal, the spinodal and t
 Choose a system, change the parameters if you like, and press Compute. Click on the diagram to
 test a composition. For the two Torlon systems with 2-propanol the parameters are fitted to
 published cloud points (Ishaque 2020). For the other systems they are rough estimates.
+</p>
+<p class="text">
+<b>About the data.</b> The only measured data on this page are nine published cloud points for
+Torlon 4000HV with 2-propanol (Ishaque 2020), shown as squares for the two Torlon systems.
+Everything else comes from theory and handbook values: the Flory-Huggins model, interaction
+parameters estimated from published Hansen solubility parameters, and rough estimates for the
+other systems.
 </p>
 
 <hr>
@@ -244,7 +257,7 @@ two-phase region starts on that side.
 </ol>
 
 <hr>
-<p class="small">H. Ishaque, October 2026. <a href="/" target="_blank" rel="noopener">Home page</a>.</p>
+<p class="small">H. Ishaque, October 2026. <a href="/">Home page</a>.</p>
 
 </div>
 </div>
@@ -253,8 +266,12 @@ two-phase region starts on that side.
 (function () {
 'use strict';
 
-// Flory-Huggins ternary solver: non-solvent (1), solvent (2), polymer (3).
-// Pure functions, no DOM. Used by the page and by the node fitting/test scripts.
+// Flory-Huggins ternary solver: binodal, spinodal, tie-lines and cloud points.
+// Pure functions, no DOM. Used by the page (inlined by build.py) and by checks.js.
+
+'use strict';
+
+// Components: non-solvent (1), solvent (2), polymer (3).
 // Volume fractions throughout. n1 = n2 = 1 (lattice sites per molecule), n3 = polymer.
 
 function muFn(f1, f2, f3, n3, c12, c13, c23, lnf2, lnf3) {
@@ -715,7 +732,32 @@ function spinodalSegments(P) {
       if (i + j + 2 <= M) tri(V(i + 1, j), V(i + 1, j + 1), V(i, j + 1));
     }
   }
-  return segs.map((sg) => sg.map(([lN, lP]) => localXY(1 - lN - lP, lN, lP)));
+  return chainSegments(segs).map((ln) => ln.map(([lN, lP]) => localXY(1 - lN - lP, lN, lP)));
+}
+
+// Joins the short segments from the contouring into continuous lines, so a dashed line keeps its
+// dash pattern instead of restarting it on every grid cell.
+function chainSegments(segs) {
+  const key = (p) => p[0].toFixed(9) + ',' + p[1].toFixed(9);
+  const ends = new Map();
+  segs.forEach((sg, i) => { for (const e of [0, 1]) { const k = key(sg[e]); if (!ends.has(k)) ends.set(k, []); ends.get(k).push([i, e]); } });
+  const used = new Uint8Array(segs.length);
+  const lines = [];
+  for (let i = 0; i < segs.length; i++) {
+    if (used[i]) continue;
+    used[i] = 1;
+    const fwd = [segs[i][1]], back = [segs[i][0]];
+    for (const part of [fwd, back]) {
+      for (;;) {
+        const next = (ends.get(key(part[part.length - 1])) || []).find(([j]) => !used[j]);
+        if (!next) break;
+        used[next[0]] = 1;
+        part.push(segs[next[0]][1 - next[1]]);
+      }
+    }
+    lines.push(back.reverse().concat(fwd));
+  }
+  return lines;
 }
 
 function pickTies(B) {
@@ -1009,5 +1051,5 @@ buildValidation();
 redraw();
 })();
 </script>
-
-</body></html>
+</body>
+</html>
