@@ -49,7 +49,8 @@ agree to better than 10<sup>−7</sup> and critical points to about 3 × 10<sup>
 | `template.html` | The page around the solver: materials, parameters, figure, text |
 | `data/cloud_points.csv` | The nine published cloud points, with their source |
 | `checks.js` | The checks, for Node.js 18 or newer |
-| `build.py` | Puts the page together: `python3 build.py` |
+| `build.py` | Puts the page together, with its title, description and preview tags: `python3 build.py` |
+| `screenshot.png`, `social.png` | Screenshot for this README, and the preview image shown when the page is shared |
 
 ## Limitations
 

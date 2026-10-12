@@ -3,8 +3,179 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Flory-Huggins ternary phase diagrams for polymer, solvent and non-solvent systems, with binodal, spinodal and tie-lines.">
-<title>Ternary Phase Diagram</title>
+<title>Flory-Huggins ternary phase diagram calculator | Hashim Ishaque</title>
+<meta name="description" content="Ternary phase diagrams for membrane casting, in the browser: Flory-Huggins binodal, spinodal, tie-lines and critical point for polymer, solvent and non-solvent.">
+<meta name="author" content="Hashim Ishaque">
+<link rel="canonical" href="https://hashimishaque.com/ternary-phase-diagrams/">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hashim Ishaque">
+<meta property="og:title" content="Ternary phase diagrams for polymer, solvent and non-solvent systems">
+<meta property="og:description" content="Ternary phase diagrams for membrane casting, in the browser: Flory-Huggins binodal, spinodal, tie-lines and critical point for polymer, solvent and non-solvent.">
+<meta property="og:url" content="https://hashimishaque.com/ternary-phase-diagrams/">
+<meta property="og:image" content="https://hashimishaque.com/ternary-phase-diagrams/social.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ternary phase diagram of Torlon, NMP and 2-propanol with the binodal, the spinodal and tie-lines">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebPage",
+   "@id": "https://hashimishaque.com/ternary-phase-diagrams/",
+   "url": "https://hashimishaque.com/ternary-phase-diagrams/",
+   "name": "Ternary phase diagrams for polymer, solvent and non-solvent systems",
+   "description": "Ternary phase diagrams for membrane casting, in the browser: Flory-Huggins binodal, spinodal, tie-lines and critical point for polymer, solvent and non-solvent.",
+   "inLanguage": "en",
+   "isPartOf": {
+    "@id": "https://hashimishaque.com/#website"
+   },
+   "author": {
+    "@id": "https://hashimishaque.com/#person"
+   },
+   "primaryImageOfPage": {
+    "@type": "ImageObject",
+    "url": "https://hashimishaque.com/ternary-phase-diagrams/social.png",
+    "width": 1200,
+    "height": 630
+   },
+   "about": [
+    {
+     "@type": "Thing",
+     "name": "Flory-Huggins solution theory",
+     "sameAs": "https://en.wikipedia.org/wiki/Flory%E2%80%93Huggins_solution_theory"
+    },
+    {
+     "@type": "Thing",
+     "name": "Ternary plot",
+     "sameAs": "https://en.wikipedia.org/wiki/Ternary_plot"
+    },
+    {
+     "@type": "Thing",
+     "name": "Binodal",
+     "sameAs": "https://en.wikipedia.org/wiki/Binodal"
+    },
+    {
+     "@type": "Thing",
+     "name": "Spinodal decomposition",
+     "sameAs": "https://en.wikipedia.org/wiki/Spinodal_decomposition"
+    },
+    {
+     "@type": "Thing",
+     "name": "Synthetic membrane",
+     "sameAs": "https://en.wikipedia.org/wiki/Synthetic_membrane"
+    }
+   ],
+   "keywords": "ternary phase diagram, Flory-Huggins, binodal, spinodal, tie-line, critical point, cloud point, phase inversion, membrane casting, polymer solution",
+   "breadcrumb": {
+    "@id": "https://hashimishaque.com/ternary-phase-diagrams/#breadcrumb"
+   }
+  },
+  {
+   "@type": "SoftwareSourceCode",
+   "@id": "https://hashimishaque.com/ternary-phase-diagrams/#code",
+   "name": "Ternary phase diagrams",
+   "description": "Ternary phase diagrams for membrane casting, in the browser: Flory-Huggins binodal, spinodal, tie-lines and critical point for polymer, solvent and non-solvent.",
+   "url": "https://hashimishaque.com/ternary-phase-diagrams/",
+   "codeRepository": "https://github.com/hashimishaque-platform/ternary-phase-diagrams",
+   "programmingLanguage": [
+    "JavaScript",
+    "Python"
+   ],
+   "runtimePlatform": "Web browser",
+   "license": "https://opensource.org/licenses/MIT",
+   "author": {
+    "@id": "https://hashimishaque.com/#person"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "@id": "https://hashimishaque.com/ternary-phase-diagrams/#breadcrumb",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Hashim Ishaque",
+     "item": "https://hashimishaque.com/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Ternary phase diagrams",
+     "item": "https://hashimishaque.com/ternary-phase-diagrams/"
+    }
+   ]
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://hashimishaque.com/#website",
+   "url": "https://hashimishaque.com/",
+   "name": "Hashim Ishaque"
+  },
+  {
+   "@type": "Person",
+   "@id": "https://hashimishaque.com/#person",
+   "name": "Hashim Ishaque",
+   "url": "https://hashimishaque.com/",
+   "sameAs": [
+    "https://www.linkedin.com/in/hashimishaque/",
+    "https://github.com/hashimishaque-platform"
+   ]
+  },
+  {
+   "@type": "Thesis",
+   "@id": "https://publications.hereon.de/id/38756/",
+   "url": "https://publications.hereon.de/id/38756/",
+   "name": "Development of novel polymeric/inorganic composite membranes for the application in gas phase membrane reactors",
+   "author": {
+    "@id": "https://hashimishaque.com/#person"
+   },
+   "datePublished": "2020",
+   "inSupportOf": "Master's degree"
+  },
+  {
+   "@type": "Dataset",
+   "@id": "https://hashimishaque.com/ternary-phase-diagrams/#cloud-points",
+   "name": "Cloud points of Torlon 4000HV in NMP and in DMF with 2-propanol",
+   "description": "Nine cloud points of the polyamide-imide Torlon 4000HV in N-methyl-2-pyrrolidone (NMP) and in N,N-dimethylformamide (DMF), with 2-propanol as the non-solvent, given as weight fractions of polymer, solvent and non-solvent. Read off Figure 36 of Ishaque (2020); reading error about 0.5 wt %.",
+   "url": "https://hashimishaque.com/ternary-phase-diagrams/",
+   "creator": {
+    "@id": "https://hashimishaque.com/#person"
+   },
+   "isBasedOn": {
+    "@id": "https://publications.hereon.de/id/38756/"
+   },
+   "citation": {
+    "@id": "https://publications.hereon.de/id/38756/"
+   },
+   "keywords": [
+    "cloud point",
+    "Torlon 4000HV",
+    "polyamide-imide",
+    "NMP",
+    "DMF",
+    "2-propanol",
+    "phase inversion",
+    "membrane"
+   ],
+   "variableMeasured": [
+    "polymer weight fraction",
+    "solvent weight fraction",
+    "non-solvent weight fraction"
+   ],
+   "distribution": {
+    "@type": "DataDownload",
+    "encodingFormat": "text/csv",
+    "contentUrl": "https://hashimishaque.com/ternary-phase-diagrams/data/cloud_points.csv"
+   }
+  }
+ ]
+}
+</script>
 <style>
 :root { color-scheme: light; }
 html { background: #ffffff; }
