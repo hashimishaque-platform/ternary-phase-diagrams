@@ -3,6 +3,15 @@
 Each step is developed on its own branch and merged into `main` once `node checks.js` passes.
 A step is ticked here with the date it was merged.
 
+## Membrane fabrication advisor
+Guidance for choosing a dope and a coagulation bath. Every rule is cited, and results are labelled as trends where the model cannot give numbers.
+- [x] Casting box: dope and bath compositions, the mixing line between them on the diagram, the cloud point of the dope and the most solvent the bath can hold before the mixing line misses the two-phase region. (2026-10-18)
+- [ ] Instantaneous or delayed demixing: a qualitative indicator from the dope cloud-point margin and the bath solvent content, with the structure it tends to give (macrovoids, sponge-like sublayer, dense or porous skin), each rule cited (Reuvers and Smolders 1987; Wijmans, Baaij and Smolders 1983; Mulder 1996).
+- [ ] Recipe suggestions: for a target structure, suggest ranges for the polymer content, non-solvent in the dope and solvent in the bath from the diagram of the chosen system, with the reasoning shown.
+- [ ] Porosity estimates only where a published correlation exists for that polymer, solvent and bath, with its source and range of validity. The page says so where none exists.
+- [ ] Pore-forming additives (PVP, PEG): the published trends and their sources, without a four-component model.
+- [ ] More polymers (for example PEI, PBI, PVC) only where interaction parameters or cloud points are published.
+
 ## Export
 - [x] Download the binodal, the spinodal and the tie-lines of the current diagram as CSV files, in wt % and in vol %. (2026-10-18)
 - [ ] Download the table of measured and calculated cloud points as a CSV file.
