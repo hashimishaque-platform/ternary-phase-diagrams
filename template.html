@@ -119,6 +119,29 @@ other systems.
       </fieldset>
 
       <fieldset>
+        <legend>Recipe suggestion</legend>
+        <label for="r-target">Target structure</label><br>
+        <select id="r-target">
+          <option value="finger">Thin top layer, finger-like macrovoids</option>
+          <option value="sponge">Dense top layer, sponge-like, no macrovoids</option>
+        </select>
+        <p style="margin-top:6px"><input type="button" id="r-go" value="Suggest"></p>
+        <div id="recipe-out" class="small" aria-live="polite"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Porosity from weighing</legend>
+        <table class="form">
+          <tr><td><label for="g-wet">Wet mass</label></td><td><input type="number" id="g-wet" step="0.001" min="0"> g</td></tr>
+          <tr><td><label for="g-dry">Dry mass</label></td><td><input type="number" id="g-dry" step="0.001" min="0"> g</td></tr>
+          <tr><td><label for="g-rl">Liquid density</label></td><td><input type="number" id="g-rl" step="0.01" min="0"> g/cm³</td></tr>
+          <tr><td><label for="g-rp">Polymer density</label></td><td><input type="number" id="g-rp" step="0.01" min="0"> g/cm³</td></tr>
+        </table>
+        <p style="margin-top:6px"><input type="button" id="g-go" value="Calculate"></p>
+        <div id="poro-out" class="small" aria-live="polite"><p>For a membrane you have made: weigh it wet, then dry. This measures porosity; it does not predict it.</p></div>
+      </fieldset>
+
+      <fieldset>
         <legend>Download (CSV)</legend>
         <input type="button" id="dl-bin" value="Binodal">
         <input type="button" id="dl-spin" value="Spinodal">
@@ -200,6 +223,96 @@ threshold. Whether demixing is instantaneous or delayed, and the structure it gi
 diffusion model, and this page does not solve it.
 </p>
 
+<h2>Fast or slow demixing</h2>
+<p>
+When a cast film is immersed, liquid-liquid demixing either starts at once (instantaneous
+demixing) or only after a delay. The two give different membranes. For instantaneously
+precipitating films "a thin toplayer of a nodular structure is always present", and these are
+also the cases where macrovoids form. With delayed demixing "a membrane with a dense toplayer is
+the result", and membranes without macrovoids form, "except when the delay time is very short"
+(Smolders et al. 1992). Reviews describe the first as a finger-like substructure with a thin skin
+and the second as a sponge-like substructure with a relatively dense top layer (Tan and Rodrigue
+2019).
+</p>
+<p>
+The Casting box lists the factors that push the chosen dope and bath one way or the other, each
+with its source:
+</p>
+<ul>
+<li><b>Solvent in the bath</b> slows precipitation (Wijmans, Baaij and Smolders 1983). With
+dioxane, DMF or DMSO "one has to add increasing amounts of these solvents to the coagulation
+bath, in order to enforce delayed demixing" (Smolders et al. 1992).</li>
+<li><b>Non-solvent in the dope</b> makes demixing start sooner, down to instantaneous demixing
+with a very thin skin (Reuvers and Smolders 1987, Part II). It also suppresses the local delay
+that lets macrovoids grow (Smolders et al. 1992).</li>
+<li><b>Mutual affinity of solvent and non-solvent.</b> High affinity is likely to give a more
+porous membrane, and low affinity is more likely to delay demixing and give a dense top layer
+(Tan and Rodrigue 2019). Going from THF to DMSO the miscibility with water increases (Smolders et
+al. 1992). The page ranks the solvents by χ<sub>12</sub> with the chosen non-solvent. Except for
+2-propanol, these χ<sub>12</sub> values are rough estimates.</li>
+<li><b>The non-solvent.</b> For polysulfone in DMAc, changing the non-solvent from water to
+2-propanol or ethanol changed demixing from instantaneous to delayed, and the macrovoids
+disappeared (Smolders et al. 1992).</li>
+<li><b>Polymer content.</b> More polymer suppresses macrovoids (Smolders et al. 1992; Guillen et
+al. 2013) and thickens the top layer (Mulder et al. 1985). One review argues the opposite for the
+onset of demixing, that more polymer makes instantaneous demixing more likely (Tan and Rodrigue
+2019). The page therefore shows polymer content as a note, without a direction.</li>
+</ul>
+<p>
+When all directional factors agree, the box names a tendency. When they disagree, it says so. The
+indicator does not compute a delay time. That needs the diffusion model of Reuvers et al. (1987),
+which this page does not solve.
+</p>
+
+<h2>Recipe suggestions</h2>
+<p>
+The Recipe box takes a target structure and returns a range for each setting. Two numbers come
+from the diagram of the current system. The lower limit on polymer is the smallest content for
+which the mixing line toward a pure non-solvent bath enters the two-phase region above the
+critical point, so that the polymer-lean phase nucleates and a porous structure can form. The
+upper limits on bath solvent and on non-solvent in the dope are the bath limit and the cloud point
+from the Casting box. Everything else is a direction taken from the papers above. The page does
+not invent target values inside these ranges; the right value depends on the film thickness, the
+temperature and the kinetics, and has to be found by experiment.
+</p>
+
+<h2>Porosity</h2>
+<p>
+No published formula was found that predicts the porosity of a membrane from the dope and bath
+compositions for the systems on this page, so the page gives no predicted porosity. What it does
+give is the standard way to measure porosity from two weighings (Ali et al. 2018, Eq. 1):
+</p>
+<pre>ε = [(w1 − w2) / ρL] / { [(w1 − w2) / ρL] + w2 / ρP }</pre>
+<p>
+with w<sub>1</sub> the mass of the membrane wet with a liquid of density ρ<sub>L</sub> (Ali et al.
+used kerosene, 0.82 g/cm³), w<sub>2</sub> the dry mass and ρ<sub>P</sub> the polymer density
+(1.78 g/cm³ for PVDF in that paper). The Porosity box evaluates it; the polymer density is filled
+in from the chosen system.
+</p>
+
+<h2>Pore-forming additives</h2>
+<p>
+PVP and PEG are added to the dope to change the structure. The model on this page has three
+components, so it does not include them. The published trends are:
+</p>
+<ul>
+<li><b>PVP and macrovoids.</b> Adding PVP to PES / NMP / water "suppresses the formation of
+macrovoids in the sub-layer", but only above "a certain minimum concentration of polymeric
+additive" and a minimum molar mass of both polymers. The result is better pore interconnectivity
+and higher porosity (Boom et al. 1992). For PES with up to 3 wt % PVP the structure stayed
+channel-like, and 5 to 8 wt % PVP moved it toward sponge-like (Salehi Shahrabi et al. 2017). Not
+every study agrees: one PES study found that added PVP enhanced macrovoids and increased porosity
+(Nisa et al. 2026).</li>
+<li><b>Viscosity.</b> Both additives raise the viscosity of the dope, which hinders demixing
+kinetically (Aminudin et al. 2013). In one PES dope, 3 wt % PVP K90 raised the viscosity from 276
+to 1099 cP, and 10 wt % PEG 400 to 429 cP (Salehi Shahrabi et al. 2017).</li>
+<li><b>Porosity and flux.</b> PEG and PVP both increased the water permeation of polysulfone
+membranes (Aminudin et al. 2013). For PEI, porosity increased with PEG content (Chen et al. 2010).
+For PES, porosity went through a maximum near 3 wt % PVP (Salehi Shahrabi et al. 2017).</li>
+<li><b>Molar mass of PEG.</b> Flux and water permeability were highest with medium-size PEG and
+fell again with very high molar mass PEG (Méndez et al. 2014).</li>
+</ul>
+
 <h2>Polymers used for membranes at Hereon</h2>
 <p>
 Helmholtz-Zentrum Hereon in Geesthacht (formerly GKSS and Helmholtz-Zentrum Geesthacht) makes
@@ -238,6 +351,13 @@ above the value at which a long-chain polymer stops dissolving (0.54 for n<sub>3
 the model would say NMP does not dissolve Ultem. In practice Ultem is cast from NMP. The Hansen
 estimate is therefore not good enough for χ<sub>23</sub> here, and PEI will be added once published
 interaction parameters or cloud points are found.
+</p>
+<p>
+<b>PBI and PVC.</b> For these the open literature gave too little to set the three χ values. For
+PVC in DMAc with water at 30 °C, one cloud point without additives is published as a table
+(10.6 wt % PVC, 85.6 wt % DMAc, 3.8 wt % water; Padilha and Borges 2019). One point cannot fix
+three parameters. For PBI only Hansen parameters were found, which have the same problem as for
+PEI. Both will be added if published interaction parameters or cloud-point series are found.
 </p>
 <p>
 The other polymers in the list that the calculator covers use rough estimates, except Torlon.
@@ -360,6 +480,18 @@ two-phase region starts on that side.
 <li>Brinkmann, T.; Lillepärg, J.; Notzke, H.; Pohlmann, J.; Shishatskiy, S.; Wind, J.; Wolff, T. Development of CO<sub>2</sub> selective poly(ethylene oxide)-based membranes: from laboratory to pilot plant scale. <i>Engineering</i> 3 (2017) 485 to 493. <a href="https://doi.org/10.1016/J.ENG.2017.04.004" target="_blank" rel="noopener">doi:10.1016/J.ENG.2017.04.004</a></li>
 <li>Lillepärg, J.; Georgopanos, P.; Emmler, T.; Shishatskiy, S. Effect of the reactive amino and glycidyl ether terminated polyethylene oxide additives on the gas transport properties of Pebax bulk and thin film composite membranes. <i>RSC Adv.</i> (2016). <a href="https://pubs.rsc.org/en/content/articlehtml/2016/ra/c5ra22026b" target="_blank" rel="noopener">pubs.rsc.org</a></li>
 <li>Syeda, U. T.; Upadhyaya, L.; Loiola, L. M. D.; Emwas, A.-H.; Volkov, A.; Nunes, S. P. Thymol: nature's solvent for sustainable hollow fiber fabrication. <i>Green Chem.</i> (2024), Supplementary Information, Table S4. <a href="https://www.rsc.org/suppdata/d4/gc/d4gc01961j/d4gc01961j1.pdf" target="_blank" rel="noopener">rsc.org/suppdata</a></li>
+<li>Smolders, C. A.; Reuvers, A. J.; Boom, R. M.; Wienk, I. M. Microstructures in phase-inversion membranes. Part 1. Formation of macrovoids. <i>J. Membr. Sci.</i> 73 (1992) 259 to 275. <a href="https://doi.org/10.1016/0376-7388(92)80134-6" target="_blank" rel="noopener">doi:10.1016/0376-7388(92)80134-6</a></li>
+<li>Boom, R. M.; Wienk, I. M.; van den Boomgaard, Th.; Smolders, C. A. Microstructures in phase inversion membranes. Part 2. The role of a polymeric additive. <i>J. Membr. Sci.</i> 73 (1992) 277 to 292. <a href="https://ris.utwente.nl/ws/files/251864695/Boom1992microstructures2.pdf" target="_blank" rel="noopener">ris.utwente.nl</a></li>
+<li>Mulder, M. H. V.; Oude Hendrikman, J.; Wijmans, J. G.; Smolders, C. A. A rationale for the preparation of asymmetric pervaporation membranes. <i>J. Appl. Polym. Sci.</i> 30 (1985) 2805 to 2820. <a href="https://ris.utwente.nl/ws/files/6736801/Mulder85rationale.pdf" target="_blank" rel="noopener">ris.utwente.nl</a></li>
+<li>Tan, X.; Rodrigue, D. A review on porous polymeric membrane preparation. Part I: production techniques with polysulfone and poly(vinylidene fluoride). <i>Polymers</i> 11 (2019) 1160. <a href="https://doi.org/10.3390/polym11071160" target="_blank" rel="noopener">doi:10.3390/polym11071160</a></li>
+<li>Guillen, G. R.; Ramon, G. Z.; Kavehpour, H. P.; Kaner, R. B.; Hoek, E. M. V. Direct microscopic observation of membrane formation by nonsolvent induced phase separation. <i>J. Membr. Sci.</i> 431 (2013) 212 to 220. <a href="https://doi.org/10.1016/j.memsci.2012.12.031" target="_blank" rel="noopener">doi:10.1016/j.memsci.2012.12.031</a></li>
+<li>Ali, I.; Bamaga, O. A.; Gzara, L.; Bassyouni, M.; Abdel-Aziz, M. H.; Soliman, M. F.; Drioli, E.; Albeirutty, M. Assessment of blend PVDF membranes, and the effect of polymer concentration and blend composition. <i>Membranes</i> 8 (2018) 13. <a href="https://doi.org/10.3390/membranes8010013" target="_blank" rel="noopener">doi:10.3390/membranes8010013</a></li>
+<li>Salehi Shahrabi, S.; Mortaheb, H. R.; Barzin, J.; Ehsani, M. R. Nanoporous polyether sulfone membrane, preparation and characterization: effect of porosity and mean pore size on performance. <i>J. Membr. Sep. Technol.</i> 6 (2017) 71 to 84. <a href="https://doi.org/10.6000/1929-6037.2017.06.02.4" target="_blank" rel="noopener">doi:10.6000/1929-6037.2017.06.02.4</a></li>
+<li>Aminudin, N. N.; Basri, H.; Harun, Z.; Yunos, M. Z.; Goh, P. S. Comparative study on effect of PEG and PVP as additives on polysulfone (PSF) membrane structure and performance. <i>Jurnal Teknologi</i> 65 (2013) 47 to 51. <a href="https://doi.org/10.11113/jt.v65.2327" target="_blank" rel="noopener">doi:10.11113/jt.v65.2327</a></li>
+<li>Nisa, Z. et al. Effect of additive polyvinylpyrrolidone (PVP) on structure and mechanical strength of polyethersulfone (PES) membrane for hemodialysis. <i>ASEAN J. Chem. Eng.</i> 26 (2026) 392 to 409. <a href="https://doi.org/10.22146/ajche.27676" target="_blank" rel="noopener">doi:10.22146/ajche.27676</a></li>
+<li>Chen, J.; Li, J.; Zhan, X.; Han, X.; Chen, C. Effect of PEG additives on properties and morphologies of polyetherimide membranes prepared by phase inversion. <i>Front. Chem. Sci. Eng.</i> 4 (2010) 300 to 306. <a href="https://doi.org/10.1007/s11705-009-0280-8" target="_blank" rel="noopener">doi:10.1007/s11705-009-0280-8</a></li>
+<li>Méndez, M. L. et al. Properties of polyethersulphone ultrafiltration membranes modified with polyethylene glycols. <i>Polym. Eng. Sci.</i> 54 (2014) 1211 to 1221. <a href="https://doi.org/10.1002/pen.23637" target="_blank" rel="noopener">doi:10.1002/pen.23637</a></li>
+<li>Padilha, L. F.; Borges, C. P. PVC membranes prepared via non-solvent induced phase separation process. <i>Braz. J. Chem. Eng.</i> 36 (2019) 497 to 509. <a href="https://doi.org/10.1590/0104-6632.20190361s20170132" target="_blank" rel="noopener">doi:10.1590/0104-6632.20190361s20170132</a></li>
 <li>Wijmans, J. G.; Baaij, J. P. B.; Smolders, C. A. The mechanism of formation of microporous or skinned membranes produced by immersion precipitation. <i>J. Membr. Sci.</i> 14 (1983) 263 to 274. <a href="https://doi.org/10.1016/0376-7388(83)80005-2" target="_blank" rel="noopener">doi:10.1016/0376-7388(83)80005-2</a></li>
 <li>Hansen, C. M. <i>Hansen Solubility Parameters: A User's Handbook,</i> 2nd ed. CRC Press, 2007.</li>
 <li>Mulder, M. <i>Basic Principles of Membrane Technology,</i> 2nd ed. Kluwer, 1996.</li>
@@ -719,7 +851,86 @@ function updateCast(r, B) {
     out.push(r.limit >= 1 ? '<p>Any bath composition gives a mixing line that reaches the two-phase region.</p>'
       : `<p>Bath limit: with more than ${pct(L[1])} ${u} solvent in the bath, the mixing line no longer reaches the two-phase region.</p>`);
   }
+  out.push(demixingHtml(r, d, bth));
   box.innerHTML = out.join('');
+}
+
+// ---------- demixing tendency (qualitative, from published rules) ----------
+// Rank of the solvent by chi12 with this non-solvent among the solvents on this page (1 = most miscible).
+function affinityRank() {
+  const k = sys(), row = CHI12[k.n];
+  const order = Object.keys(row).sort((a, b) => row[a] - row[b]);
+  return { rank: order.indexOf(k.s) + 1, n: order.length, most: SOLVENTS[order[0]].label, least: SOLVENTS[order[order.length - 1]].label };
+}
+
+function demixingFactors(r, d, bth) {
+  const k = sys(), u = unitLabel(), f = [];
+  if (bth[1] <= 0) f.push({ dir: 'inst', text: 'The bath is pure non-solvent, so nothing in the bath delays demixing.' });
+  else if (r.limit != null && r.limit < 1 && bth[1] >= toDisp([1 - r.limit, r.limit, 0])[1]) f.push({ dir: 'none', text: 'The bath holds more solvent than the bath limit, so the film may not demix at all.' });
+  else f.push({ dir: 'delay', text: `The bath holds ${pct(bth[1])} ${u} solvent. Solvent in the bath slows precipitation and is used to enforce delayed demixing (Wijmans, Baaij and Smolders 1983; Smolders et al. 1992).` });
+  if (d[0] > 0 && r.cloud) {
+    const q = toDisp(r.cloud.point);
+    f.push({ dir: 'inst', text: `The dope holds non-solvent, ${Math.round(100 * d[0] / q[0])} % of the way to its cloud point. This moves the start of demixing toward instantaneous (Reuvers and Smolders 1987), but it also suppresses the local delay that grows macrovoids (Smolders et al. 1992).` });
+  }
+  const a = affinityRank();
+  f.push(a.rank <= a.n / 2
+    ? { dir: 'inst', text: `${SOLVENTS[k.s].label} is among the more miscible solvents with ${NONSOLVENTS[k.n].label} on this page (rank ${a.rank} of ${a.n} by χ<sub>12</sub>). High mutual affinity favours instantaneous demixing and a more porous membrane (Tan and Rodrigue 2019).` }
+    : { dir: 'delay', text: `${SOLVENTS[k.s].label} is among the less miscible solvents with ${NONSOLVENTS[k.n].label} on this page (rank ${a.rank} of ${a.n} by χ<sub>12</sub>). Low mutual affinity favours delayed demixing and a dense top layer (Tan and Rodrigue 2019; Smolders et al. 1992).` });
+  if (k.n !== 'water') f.push({ dir: 'delay', text: `${NONSOLVENTS[k.n].label} instead of water: for polysulfone in DMAc, changing the non-solvent to 2-propanol or ethanol changed demixing from instantaneous to delayed and removed the macrovoids (Smolders et al. 1992).` });
+  f.push({ dir: 'info', text: 'Polymer content: a higher polymer content suppresses macrovoids (Smolders et al. 1992; Guillen et al. 2013) and thickens the top layer (Mulder et al. 1985).' });
+  return f;
+}
+
+function demixingHtml(r, d, bth) {
+  const f = demixingFactors(r, d, bth);
+  const dirs = f.filter((x) => x.dir === 'inst' || x.dir === 'delay').map((x) => x.dir);
+  const mark = { inst: 'toward instantaneous', delay: 'toward delayed', none: 'no demixing', info: 'note' };
+  let verdict;
+  if (f.some((x) => x.dir === 'none')) verdict = 'No demixing expected from the mixing line.';
+  else if (dirs.every((x) => x === 'inst')) verdict = 'Tendency: instantaneous demixing. Expected: a thin top layer and, often, finger-like macrovoids (Smolders et al. 1992).';
+  else if (dirs.every((x) => x === 'delay')) verdict = 'Tendency: delayed demixing. Expected: a dense top layer and a sponge-like sublayer without macrovoids (Smolders et al. 1992).';
+  else verdict = 'Tendency: mixed. The factors pull in different directions, so only an experiment or a diffusion model can decide.';
+  return `<p><b>Fast or slow demixing.</b> ${verdict}</p><ul>` + f.map((x) => `<li><i>${mark[x.dir]}:</i> ${x.text}</li>`).join('') + '</ul>';
+}
+
+// ---------- recipe suggestion ----------
+function suggestRecipe() {
+  const box = $('recipe-out');
+  const P = params(), k = sys(), u = unitLabel();
+  const B = traceBinodal(P.n3, P.c12, P.c13, P.c23);
+  if (!B || B.ties[B.ties.length - 1].len >= 0.03) { box.innerHTML = '<p>A recipe needs a closed binodal with a critical point. These parameters do not give one.</p>'; return; }
+  const target = $('r-target').value;
+  const pure = [1, 0, 0];
+  const pmin = minPolymerAboveCritical(0, pure, B.curve, B.critical);
+  if (pmin == null) { box.innerHTML = '<p>No dope up to 60 % polymer enters the two-phase region above the critical point with this system.</p>'; return; }
+  const pDisp = toDisp([0, 1 - pmin, pmin])[2];
+  // the dope polymer content from the Casting box, if it is above the bound, else the bound itself
+  const pUser = num('d-p', 0) / 100;
+  const pUse = Math.max(fromDisp([0, 1 - pUser, pUser])[2] || 0, pmin);
+  const dope = [0, 1 - pUse, pUse];
+  const cloud = dopeCloudPoint(dope, B.curve), L = bathSolventLimit(dope, B.curve);
+  const pShow = pct(toDisp(dope)[2]), cShow = cloud ? pct(toDisp(cloud.point)[0]) : null, LShow = pct(toDisp([1 - L, L, 0])[1]);
+  const a = affinityRank();
+  const rows = [];
+  rows.push(`<tr><td>Polymer</td><td>at least ${pct(pDisp)} ${u}</td><td>Below this the mixing line with a pure non-solvent bath enters the two-phase region below the critical point, where the polymer-rich phase forms droplets and the structure is weak.${target === 'finger' ? ' Stay toward the low end: higher polymer content suppresses macrovoids (Smolders et al. 1992).' : ' Go higher: more polymer suppresses macrovoids (Smolders et al. 1992; Guillen et al. 2013).'}</td></tr>`);
+  if (target === 'finger') {
+    rows.push(`<tr><td>Non-solvent in the dope</td><td>none</td><td>Non-solvent in the dope suppresses macrovoids (Smolders et al. 1992). ${cShow ? `At ${pShow} ${u} polymer the dope clouds at ${cShow} ${u} non-solvent.` : ''}</td></tr>`);
+    rows.push(`<tr><td>Solvent in the bath</td><td>none (pure ${NONSOLVENTS[k.n].label})</td><td>Solvent in the bath delays demixing (Wijmans, Baaij and Smolders 1983).</td></tr>`);
+    rows.push(`<tr><td>Solvent and non-solvent</td><td>a miscible pair</td><td>High mutual affinity favours instantaneous demixing (Tan and Rodrigue 2019). On this page ${a.most} is the most miscible solvent with ${NONSOLVENTS[k.n].label}.${k.n !== 'water' ? ' Water is the usual non-solvent here; alcohols tend to delay demixing (Smolders et al. 1992).' : ''}</td></tr>`);
+  } else {
+    rows.push(`<tr><td>Solvent in the bath</td><td>above 0, below ${LShow} ${u}</td><td>Solvent in the bath slows precipitation and enforces delayed demixing (Wijmans, Baaij and Smolders 1983; Smolders et al. 1992). At ${pShow} ${u} polymer, above ${LShow} ${u} the mixing line misses the two-phase region. The amount needed for delay rises with polymer content (Smolders et al. 1992) and has to be found by experiment.</td></tr>`);
+    rows.push(`<tr><td>Non-solvent in the dope</td><td>0 to below ${cShow || '?'} ${u}</td><td>Small amounts suppress macrovoids (Smolders et al. 1992) but move the start of demixing toward instantaneous (Reuvers and Smolders 1987). Stay clearly below the cloud point.</td></tr>`);
+    rows.push(`<tr><td>Solvent and non-solvent</td><td>a less miscible pair, or an alcohol bath</td><td>Low mutual affinity favours delayed demixing (Tan and Rodrigue 2019). On this page ${a.least} is the least miscible solvent with ${NONSOLVENTS[k.n].label}. An alcohol instead of water changed PSf / DMAc to delayed demixing (Smolders et al. 1992).</td></tr>`);
+    rows.push(`<tr><td>Additive</td><td>PVP, optional</td><td>PVP above a minimum content and molar mass suppresses macrovoids (Boom et al. 1992). See Pore-forming additives below.</td></tr>`);
+  }
+  box.innerHTML = `<p>For the current system and parameters. The bounds come from the diagram; the directions come from the cited papers and are trends, not guarantees.</p><div class="scroll"><table class="data left"><tr><th>Setting</th><th>Range</th><th>Why</th></tr>${rows.join('')}</table></div>`;
+}
+
+function calcPorosity() {
+  const e = gravimetricPorosity(num('g-wet', NaN), num('g-dry', NaN), num('g-rl', NaN), num('g-rp', NaN));
+  $('poro-out').innerHTML = e == null
+    ? '<p>Enter a wet mass larger than the dry mass, and both densities.</p>'
+    : `<p>Porosity: ${(100 * e).toFixed(1)} % (Ali et al. 2018, Eq. 1).</p>`;
 }
 
 function readCast() {
@@ -829,6 +1040,7 @@ function syncInputs() {
 
 function applySystem() {
   const k = sys();
+  $('g-rp').value = POLYMERS[k.p].rho.toFixed(2);
   $('c12').value = CHI12[k.n][k.s].toFixed(2);
   $('c13').value = CHI13[k.n][k.p].toFixed(2);
   $('c23').value = CHI23[k.s][k.p].toFixed(2);
@@ -949,10 +1161,13 @@ $('c-go').addEventListener('click', () => {
   redraw();
 });
 $('c-off').addEventListener('click', () => { state.cast = null; redraw(); });
+$('r-go').addEventListener('click', suggestRecipe);
+$('g-go').addEventListener('click', calcPorosity);
 
 // Example composition on load: 10 wt % Torlon, 30 wt % 2-propanol.
 state.test = wtToVol([0.30, 0.60, 0.10], rho());
 $('d-p').value = '15.0'; $('d-n').value = '0.0'; $('b-s').value = '0.0';
+$('g-rl').value = '1.00';
 updateStatus();
 syncInputs();
 buildValidation();

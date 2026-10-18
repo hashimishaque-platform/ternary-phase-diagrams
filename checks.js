@@ -143,5 +143,32 @@ for (const s of ['NMP', 'DMF']) {
   console.log(`Casting, Torlon / ${s}, dope 15 wt % Torlon: bath limit ${(100 * Lw).toFixed(1)} wt % ${s}; dope cloud point matches the titration to ${dc.toExponential(1)}`);
   if (bad.length) { console.log('  problems: ' + bad.join('; ')); ok = false; }
 }
+// 6. Recipe bound and porosity formula
+for (const s of ['NMP', 'DMF']) {
+  const F = fits[s];
+  const B = S.traceBinodal(n3, F.c12, c13, F.c23);
+  if (!B) continue;
+  const bad = [];
+  for (const bs of [0, 0.3]) {
+    const bath = S.wtToVol([1 - bs, bs, 0], F.rho);
+    const pmin = S.minPolymerAboveCritical(0, bath, B.curve, B.critical);
+    if (pmin === null) { bad.push(`no lower polymer bound for bath ${bs}`); continue; }
+    // just above the bound the entry is above the critical point, just below it is not
+    const eAt = (p) => S.firstEntry([0, 1 - p, p], bath, B.curve);
+    const hi = eAt(pmin + 1e-6), lo = eAt(pmin - 1e-4);
+    if (!(hi && hi.point[2] > B.critical[2])) bad.push('entry above the bound is not above the critical point');
+    if (lo && lo.point[2] > B.critical[2]) bad.push('entry below the bound is already above the critical point');
+    console.log(`Recipe, Torlon / ${s}, bath ${100 * bs} wt % ${s}: polymer at least ${(100 * S.volToWt([0, 1 - pmin, pmin], F.rho)[2]).toFixed(1)} wt % for entry above the critical point`);
+  }
+  if (bad.length) { console.log('  problems: ' + bad.join('; ')); ok = false; }
+}
+{
+  // hand calculation: 1.0 g wet, 0.4 g dry, kerosene 0.82, PVDF 1.78 g/cm3 (densities from Ali et al. 2018)
+  const e = S.gravimetricPorosity(1.0, 0.4, 0.82, 1.78);
+  const hand = (0.6 / 0.82) / (0.6 / 0.82 + 0.4 / 1.78);
+  const ok6 = Math.abs(e - hand) < 1e-12 && Math.abs(e - 0.76505) < 1e-4 && S.gravimetricPorosity(0.4, 0.5, 1, 1) === null;
+  console.log(`Gravimetric porosity of the worked example: ${(100 * e).toFixed(2)} % (by hand 76.50 %)`);
+  if (!ok6) ok = false;
+}
 console.log(ok ? 'All checks passed.' : 'Some checks failed.');
 process.exit(ok ? 0 : 1);
