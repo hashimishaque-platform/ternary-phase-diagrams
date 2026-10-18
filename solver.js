@@ -292,6 +292,130 @@ function wtToVol(w, rho) {
   return v.map((x) => x / s);
 }
 
+// ---------- export ----------
+
+// Spinodal over the whole triangle, in volume fractions [non-solvent, solvent, polymer].
+// The determinant is sampled on a triangular grid in (phi1, phi3); every grid edge where it changes
+// sign is bisected on the exact determinant, so each point lies on the spinodal to rounding error.
+// Points are joined into lines by the grid edge they lie on.
+function spinodalLines(n3, c12, c13, c23, M) {
+  M = M || 240;
+  const eps = 1e-6;
+  const node = (i, j) => {
+    const v = [Math.max(i / M, eps), Math.max((M - i - j) / M, eps), Math.max(j / M, eps)];
+    const t = v[0] + v[1] + v[2];
+    return v.map((x) => x / t);
+  };
+  const det = (v) => spinodalDet(v[0], v[1], v[2], n3, c12, c13, c23);
+  const val = new Map();
+  const at = (i, j) => { const k = i * (M + 1) + j; if (!val.has(k)) val.set(k, det(node(i, j))); return val.get(k); };
+  const crossing = new Map();
+  const cross = (p, q) => {
+    const kp = p[0] * (M + 1) + p[1], kq = q[0] * (M + 1) + q[1];
+    const key = kp < kq ? kp + ':' + kq : kq + ':' + kp;
+    if (crossing.has(key)) return key;
+    let a = node(p[0], p[1]), b = node(q[0], q[1]);
+    let da = at(p[0], p[1]);
+    for (let it = 0; it < 60; it++) {
+      const m = [0.5 * (a[0] + b[0]), 0.5 * (a[1] + b[1]), 0.5 * (a[2] + b[2])];
+      const dm = det(m);
+      if ((dm < 0) === (da < 0)) { a = m; da = dm; } else b = m;
+    }
+    crossing.set(key, [0, 1, 2].map((k) => 0.5 * (a[k] + b[k])));
+    return key;
+  };
+  const segs = [];
+  const tri = (A, B, C) => {
+    const ks = [];
+    for (const [p, q] of [[A, B], [B, C], [C, A]]) {
+      const dp = at(p[0], p[1]), dq = at(q[0], q[1]);
+      if (isFinite(dp) && isFinite(dq) && (dp < 0) !== (dq < 0)) ks.push(cross(p, q));
+    }
+    if (ks.length === 2) segs.push(ks);
+  };
+  for (let i = 0; i < M; i++) {
+    for (let j = 0; j < M - i; j++) {
+      tri([i, j], [i + 1, j], [i, j + 1]);
+      if (i + j + 2 <= M) tri([i + 1, j], [i + 1, j + 1], [i, j + 1]);
+    }
+  }
+  const ends = new Map();
+  segs.forEach((sg, n) => { for (const e of [0, 1]) { if (!ends.has(sg[e])) ends.set(sg[e], []); ends.get(sg[e]).push([n, e]); } });
+  const used = new Uint8Array(segs.length);
+  const lines = [];
+  for (let n = 0; n < segs.length; n++) {
+    if (used[n]) continue;
+    used[n] = 1;
+    const fwd = [segs[n][1]], back = [segs[n][0]];
+    for (const part of [fwd, back]) {
+      for (;;) {
+        const next = (ends.get(part[part.length - 1]) || []).find(([m]) => !used[m]);
+        if (!next) break;
+        used[next[0]] = 1;
+        part.push(segs[next[0]][1 - next[1]]);
+      }
+    }
+    lines.push(back.reverse().concat(fwd).map((k) => crossing.get(k)));
+  }
+  return lines;
+}
+
+// Number for a CSV cell: percent, ten significant digits, plain decimal where it is readable.
+function csvNum(x) {
+  const v = 100 * x;
+  if (v === 0) return '0';
+  return Math.abs(v) >= 1e-4 ? String(Number(v.toPrecision(10))) : v.toPrecision(10);
+}
+
+// Header lines that describe the system, the parameters and the units.
+function csvHeader(what, info) {
+  const P = info.params;
+  return [
+    `# ${what}`,
+    `# System: ${info.polymer} (polymer) / ${info.solvent} (solvent) / ${info.nonsolvent} (non-solvent)`,
+    `# Flory-Huggins parameters: chi12 = ${P.c12}, chi13 = ${P.c13}, chi23 = ${P.c23}, n3 = ${P.n3}`,
+    `# Densities used for wt %, g/cm3: non-solvent ${info.rho[0]}, solvent ${info.rho[1]}, polymer ${info.rho[2]}`,
+    '# All compositions in percent. vol % are the model volume fractions; wt % follow from them with the densities above.',
+  ];
+}
+
+const comp = (v, rho) => { const w = volToWt(v, rho); return [w[0], w[1], w[2], v[0], v[1], v[2]].map(csvNum); };
+const COLS = 'non-solvent wt %,solvent wt %,polymer wt %,non-solvent vol %,solvent vol %,polymer vol %';
+
+// Binodal as one closed curve: polymer-rich branch from the polymer / non-solvent side to the
+// critical point, then the polymer-lean branch back.
+function binodalCSV(B, info) {
+  const closed = B.ties[B.ties.length - 1].len < 0.03;
+  const out = csvHeader('Binodal', info);
+  if (!closed) out.push('# The calculation stopped before the critical point. The middle point is the centre of the last tie-line, not a critical point.');
+  out.push('point,branch,' + COLS);
+  const n = B.ties.length;
+  B.curve.forEach((v, i) => {
+    const branch = i < n ? 'polymer-rich' : i === n ? (closed ? 'critical point' : 'end') : 'polymer-lean';
+    out.push([i + 1, branch].concat(comp(v, info.rho)).join(','));
+  });
+  return out.join('\n') + '\n';
+}
+
+// Tie-lines: the two coexisting phases on each line.
+function tieLinesCSV(B, info) {
+  const out = csvHeader('Tie-lines (all computed, polymer-rich phase first)', info);
+  out.push('# The first tie-line lies on the polymer / non-solvent side, where there is no solvent.');
+  const half = (p) => COLS.split(',').map((c) => `${p} ${c}`).join(',');
+  out.push('tie-line,' + half('rich') + ',' + half('lean'));
+  B.ties.forEach((t, i) => out.push([i + 1].concat(comp(t.a, info.rho), comp(t.b, info.rho)).join(',')));
+  return out.join('\n') + '\n';
+}
+
+// Spinodal: one or more lines, each a sequence of points along the curve.
+function spinodalCSV(lines, info) {
+  const out = csvHeader('Spinodal', info);
+  if (!lines.length) out.push('# No spinodal: the mixture is locally stable everywhere in the triangle.');
+  out.push('line,point,' + COLS);
+  lines.forEach((ln, k) => ln.forEach((v, i) => out.push([k + 1, i + 1].concat(comp(v, info.rho)).join(','))));
+  return out.join('\n') + '\n';
+}
+
 if (typeof module !== 'undefined') {
-  module.exports = { muFn, spinodalDet, solve, newton, binaryEdge, tieAt, traceBinodal, pointInPolygon, tieThrough, distanceToCurve, locallyStable, proj, inTwoPhase, cloudPoint, volToWt, wtToVol };
+  module.exports = { muFn, spinodalDet, solve, newton, binaryEdge, tieAt, traceBinodal, pointInPolygon, tieThrough, distanceToCurve, locallyStable, proj, inTwoPhase, cloudPoint, volToWt, wtToVol, spinodalLines, csvNum, binodalCSV, tieLinesCSV, spinodalCSV };
 }
