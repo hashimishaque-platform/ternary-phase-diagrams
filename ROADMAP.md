@@ -18,6 +18,21 @@ Guidance for choosing a dope and a coagulation bath. Every rule is cited, and re
 - [ ] More polymers (for example PBI, PVC) only where interaction parameters or cloud points are published.
   Checked 2026-10-18: for PVC only one tabulated cloud point (Padilha and Borges 2019) and for PBI only Hansen parameters were found in open sources. Not enough to set three chi values.
 
+## Planner for students
+Turn the page into a starting point for choosing a casting recipe. Every value is cited; nothing is invented.
+- [ ] Recipe library: a table of published casting recipes (polymer, dope, bath, form, reported structure, porosity or flux, source), about 20 to start for PES, PSf, PVDF and PAN, with filters and a link that shows a recipe on the diagram. Results are filled only from the source.
+- [ ] Confidence label on every system (fitted to data, published parameters, rough estimate), shown next to the diagram and on every recipe.
+- [ ] Validation page: the model against published cloud points without refitting, one figure and one RMS per system. Systems that miss keep the rough-estimate label.
+- [ ] Weigh-out calculator: masses of polymer, additive, solvent and non-solvent for a chosen dope mass, and of solvent and non-solvent for the bath.
+- [ ] Lab sheet: one printable page with the recipe, the weighing plan, the expected tendency, the references and blank fields for bench conditions and results.
+- [ ] Shareable link: the address holds the system and the settings.
+- [ ] One clear step order on the page: system, diagram, target structure, recipe, weigh-out, lab sheet.
+- [ ] Uncertainty band on the binodal over the plausible range of chi.
+- [ ] Bath temperature and time in air as cited trends, before temperature-dependent chi.
+- [ ] Composition-dependent g12 for water systems (see the Composition-dependent section below).
+- [ ] Green solvents (Cyrene, PolarClean, GVL) only where published parameters exist.
+- [ ] CITATION.cff and a versioned release, so the tool can be cited.
+
 ## Export
 - [x] Download the binodal, the spinodal and the tie-lines of the current diagram as CSV files, in wt % and in vol %. (2026-10-18)
 - [ ] Download the table of measured and calculated cloud points as a CSV file.
