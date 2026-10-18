@@ -53,5 +53,59 @@ for (const s of ['NMP', 'DMF']) {
   console.log(`  RMS deviation ${rms.toFixed(2)} wt %, largest ${worst.toFixed(2)} wt %`);
   if (!(res < 1e-9 && Math.abs(det / scale) < 1e-2 && rms < 1.0)) ok = false;
 }
+// 4. CSV downloads: read the files back and check them against the solver
+const readCSV = (text) => text.split('\n').filter((l) => l && !l.startsWith('#')).slice(1).map((l) => l.split(','));
+const near = (a, b, tol) => Math.abs(a - b) <= tol;
+for (const s of ['NMP', 'DMF']) {
+  const F = fits[s];
+  const B = S.traceBinodal(n3, F.c12, c13, F.c23);
+  if (!B) continue;
+  const info = { polymer: 'Torlon', solvent: s, nonsolvent: '2-propanol', params: { c12: F.c12, c13, c23: F.c23, n3 }, rho: F.rho };
+  let bad = [];
+  // a row of six percentages: both triples sum to 100, and the wt % follow from the vol % with the densities
+  const rowOk = (r) => {
+    const w = r.slice(0, 3).map(Number), v = r.slice(3, 6).map(Number);
+    if (!(w.concat(v).every((x) => isFinite(x) && x >= 0))) return false;
+    const ww = S.volToWt(v.map((x) => x / 100), F.rho).map((x) => 100 * x);
+    return near(w[0] + w[1] + w[2], 100, 1e-7) && near(v[0] + v[1] + v[2], 100, 1e-7) && ww.every((x, i) => near(x, w[i], 1e-7));
+  };
+  // binodal: same points as the curve the page draws
+  const bin = readCSV(S.binodalCSV(B, info));
+  if (bin.length !== B.curve.length) bad.push('binodal row count');
+  bin.forEach((r, i) => {
+    if (!rowOk(r.slice(2))) bad.push(`binodal row ${i + 1}`);
+    if (!B.curve[i].every((x, k) => near(100 * x, +r[5 + k], 1e-7))) bad.push(`binodal point ${i + 1}`);
+  });
+  if (bin[B.ties.length][1] !== 'critical point') bad.push('critical point row');
+  // tie-lines: the two phases read back from the file still have equal chemical potentials
+  const tie = readCSV(S.tieLinesCSV(B, info));
+  if (tie.length !== B.ties.length) bad.push('tie-line row count');
+  let dmu = 0;
+  tie.forEach((r, i) => {
+    if (!rowOk(r.slice(1, 7)) || !rowOk(r.slice(7, 13))) bad.push(`tie-line row ${i + 1}`);
+    if (i === 0) return;                     // the edge tie-line has no solvent, ln 0 is not defined
+    const a = r.slice(4, 7).map((x) => x / 100), b = r.slice(10, 13).map((x) => x / 100);
+    const A = S.muFn(a[0], a[1], a[2], n3, F.c12, c13, F.c23), C = S.muFn(b[0], b[1], b[2], n3, F.c12, c13, F.c23);
+    dmu = Math.max(dmu, Math.abs(A[0] - C[0]), Math.abs(A[1] - C[1]), Math.abs(A[2] - C[2]) / n3);
+  });
+  if (!(dmu < 1e-7)) bad.push(`tie-line chemical potentials differ by ${dmu.toExponential(1)}`);
+  // spinodal: every point has a zero determinant, and the spinodal passes through the critical point
+  const lines = S.spinodalLines(n3, F.c12, c13, F.c23);
+  const sp = readCSV(S.spinodalCSV(lines, info));
+  let worstDet = 0, dCrit = Infinity;
+  sp.forEach((r, i) => {
+    if (!rowOk(r.slice(2))) bad.push(`spinodal row ${i + 1}`);
+    const v = r.slice(5, 8).map((x) => x / 100);
+    const sc = (1 / v[0] + 1 / v[1]) * (1 / v[0] + 1 / (n3 * v[2]));
+    worstDet = Math.max(worstDet, Math.abs(S.spinodalDet(v[0], v[1], v[2], n3, F.c12, c13, F.c23) / sc));
+    dCrit = Math.min(dCrit, Math.hypot(v[0] - B.critical[0], v[1] - B.critical[1], v[2] - B.critical[2]));
+  });
+  if (!(worstDet < 1e-8)) bad.push(`spinodal determinant ${worstDet.toExponential(1)}`);
+  if (!(dCrit < 5e-3)) bad.push(`spinodal misses the critical point by ${dCrit.toExponential(1)}`);
+  console.log(`CSV files, Torlon / ${s}: ${bin.length} binodal points, ${tie.length} tie-lines, ${sp.length} spinodal points in ${lines.length} line(s)`);
+  console.log(`  chemical potentials read back from the tie-line file agree to ${dmu.toExponential(1)} (should be below 1e-7)`);
+  console.log(`  spinodal determinant at the exported points, relative: at most ${worstDet.toExponential(1)}; nearest point to the critical point ${dCrit.toExponential(1)}`);
+  if (bad.length) { console.log('  problems: ' + bad.slice(0, 5).join('; ')); ok = false; }
+}
 console.log(ok ? 'All checks passed.' : 'Some checks failed.');
 process.exit(ok ? 0 : 1);
