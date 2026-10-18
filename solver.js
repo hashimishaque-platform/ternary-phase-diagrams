@@ -292,6 +292,50 @@ function wtToVol(w, rho) {
   return v.map((x) => x / s);
 }
 
+// ---------- casting: dope, coagulation bath and the mixing line ----------
+// Compositions are volume fractions [non-solvent, solvent, polymer]. A mixture of dope and bath
+// lies on the straight line between them (mass balance with no volume change on mixing, as in
+// the lattice model). The line is also straight in weight fractions, because the change from
+// volume to weight fractions maps straight lines to straight lines.
+
+// Fraction t of the way from p to q at which the line first enters the two-phase region
+// (null if it never does). The entry is found by a scan and then by bisection.
+function firstEntry(p, q, curve) {
+  const at = (t) => [0, 1, 2].map((k) => p[k] + t * (q[k] - p[k]));
+  if (inTwoPhase(p, curve)) return { t: 0, point: p.slice() };
+  const N = 800;
+  let prev = 0;
+  for (let i = 1; i <= N; i++) {
+    const t = i / N;
+    if (inTwoPhase(at(t), curve)) {
+      let lo = prev, hi = t;
+      for (let k = 0; k < 50; k++) { const m = 0.5 * (lo + hi); if (inTwoPhase(at(m), curve)) hi = m; else lo = m; }
+      const tt = 0.5 * (lo + hi);
+      return { t: tt, point: at(tt) };
+    }
+    prev = t;
+  }
+  return null;
+}
+
+// Cloud point of the dope: add pure non-solvent until the solution turns turbid.
+function dopeCloudPoint(dope, curve) {
+  return firstEntry(dope, [1, 0, 0], curve);
+}
+
+// The most solvent a solvent / non-solvent bath can hold while the mixing line between dope and
+// bath still reaches the two-phase region. Returns the solvent volume fraction of that bath,
+// 0 if even pure non-solvent does not reach it, or 1 if every bath does.
+function bathSolventLimit(dope, curve) {
+  const reaches = (b) => firstEntry(dope, [1 - b, b, 0], curve) !== null;
+  if (!reaches(0)) return 0;
+  let lo = 0, hi = null;
+  for (let b = 0.01; b < 1; b += 0.01) { if (!reaches(b)) { hi = b; break; } lo = b; }
+  if (hi === null) return 1;
+  for (let k = 0; k < 40; k++) { const m = 0.5 * (lo + hi); if (reaches(m)) lo = m; else hi = m; }
+  return 0.5 * (lo + hi);
+}
+
 // ---------- export ----------
 
 // Spinodal over the whole triangle, in volume fractions [non-solvent, solvent, polymer].
@@ -417,5 +461,5 @@ function spinodalCSV(lines, info) {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { muFn, spinodalDet, solve, newton, binaryEdge, tieAt, traceBinodal, pointInPolygon, tieThrough, distanceToCurve, locallyStable, proj, inTwoPhase, cloudPoint, volToWt, wtToVol, spinodalLines, csvNum, binodalCSV, tieLinesCSV, spinodalCSV };
+  module.exports = { muFn, spinodalDet, solve, newton, binaryEdge, tieAt, traceBinodal, pointInPolygon, tieThrough, distanceToCurve, locallyStable, proj, inTwoPhase, cloudPoint, volToWt, wtToVol, spinodalLines, csvNum, firstEntry, dopeCloudPoint, bathSolventLimit, binodalCSV, tieLinesCSV, spinodalCSV };
 }

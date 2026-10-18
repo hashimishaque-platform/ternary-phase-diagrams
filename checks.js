@@ -107,5 +107,41 @@ for (const s of ['NMP', 'DMF']) {
   console.log(`  spinodal determinant at the exported points, relative: at most ${worstDet.toExponential(1)}; nearest point to the critical point ${dCrit.toExponential(1)}`);
   if (bad.length) { console.log('  problems: ' + bad.slice(0, 5).join('; ')); ok = false; }
 }
+// 5. Casting: the mixing line between a dope and a coagulation bath
+for (const s of ['NMP', 'DMF']) {
+  const F = fits[s];
+  const B = S.traceBinodal(n3, F.c12, c13, F.c23);
+  if (!B) continue;
+  const bad = [];
+  const ns = [1, 0, 0];
+  // (a) for a dope with no non-solvent, the dope cloud point equals the titration cloud point used in the fit
+  let dc = 0;
+  for (const w of points[s]) {
+    const v = S.wtToVol(w, F.rho), rr = v[2] / (v[1] + v[2]);
+    const t = S.cloudPoint(rr, B.curve), c = S.dopeCloudPoint([0, 1 - rr, rr], B.curve);
+    dc = Math.max(dc, Math.abs(c.point[0] - t));
+  }
+  if (!(dc < 1e-6)) bad.push(`dope cloud point differs from the titration by ${dc.toExponential(1)}`);
+  // (b) the entry point of a mixing line lies on the binodal, and the line is straight in wt % as well
+  const dope = S.wtToVol([0, 0.85, 0.15], F.rho);
+  const bath = S.wtToVol([0.7, 0.3, 0], F.rho);
+  const e = S.firstEntry(dope, bath, B.curve);
+  if (!e) bad.push('mixing line does not enter'); else {
+    const dist = S.distanceToCurve(e.point, B.curve);
+    if (!(dist < 1e-9)) bad.push(`entry point is ${dist.toExponential(1)} off the binodal`);
+    const [a, b, q] = [dope, bath, e.point].map((v) => S.volToWt(v, F.rho));
+    const cross = (b[0] - a[0]) * (q[2] - a[2]) - (b[2] - a[2]) * (q[0] - a[0]);
+    if (!(Math.abs(cross) < 1e-12)) bad.push(`mixing line is not straight in wt %: ${cross.toExponential(1)}`);
+  }
+  // (c) the bath limit: a little less solvent still reaches the two-phase region, a little more does not
+  const L = S.bathSolventLimit(dope, B.curve);
+  const reach = (b) => S.firstEntry(dope, [1 - b, b, 0], B.curve) !== null;
+  if (!(L > 0.01 && L < 0.99 && reach(L - 0.005) && !reach(L + 0.005))) bad.push(`bath limit ${L}`);
+  // (d) pure non-solvent always reaches the two-phase region from a clear dope
+  if (!S.firstEntry(dope, ns, B.curve)) bad.push('pure non-solvent bath does not reach');
+  const Lw = S.volToWt([1 - L, L, 0], F.rho)[1];
+  console.log(`Casting, Torlon / ${s}, dope 15 wt % Torlon: bath limit ${(100 * Lw).toFixed(1)} wt % ${s}; dope cloud point matches the titration to ${dc.toExponential(1)}`);
+  if (bad.length) { console.log('  problems: ' + bad.join('; ')); ok = false; }
+}
 console.log(ok ? 'All checks passed.' : 'Some checks failed.');
 process.exit(ok ? 0 : 1);
