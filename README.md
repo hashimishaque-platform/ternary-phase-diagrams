@@ -25,6 +25,10 @@ and rough estimates for the other systems.
 - Draws the spinodal, where the determinant of the second derivatives of the free energy is zero.
 - For any composition you click: stable, metastable or unstable, the two phases it splits into,
   and their shares by the lever rule.
+- Casting: for a dope and a coagulation bath of solvent and non-solvent, draws the mixing line
+  between them, gives the cloud point of the dope, where the line enters the two-phase region, and
+  the most solvent the bath can hold before the line misses it. The page explains why this is a
+  guide and not the diffusion path of the film.
 - Downloads the binodal, the spinodal and all tie-lines of the current diagram as CSV files, with
   every composition in wt % and in vol % and the parameters and densities in the header lines.
 - For the two Torlon systems the parameters are fitted to the published cloud points. The page explains
@@ -42,6 +46,10 @@ and rough estimates for the other systems.
 The checks also read the CSV files back. The chemical potentials of the two phases in each
 exported tie-line agree to better than 10<sup>−9</sup>, every exported spinodal point has a zero
 determinant to 2 × 10<sup>−10</sup> (relative), and the spinodal passes through the critical point.
+
+For casting, the checks confirm that the cloud point of a dope without non-solvent equals the
+titration cloud point used in the fit, that the entry point of a mixing line lies on the binodal,
+and that the bath limit separates baths that reach the two-phase region from baths that do not.
 
 The solver was also compared with an independent implementation in Python (SciPy): tie-lines
 agree to better than 10<sup>−7</sup> and critical points to about 3 × 10<sup>−5</sup>.
@@ -69,7 +77,8 @@ water rows are only indicative.
 Flory, *Principles of Polymer Chemistry* (1953); Tompa, *Polymer Solutions* (1956); Altena and
 Smolders, Macromolecules 15 (1982) 1491; Yilmaz and McHugh, J. Appl. Polym. Sci. 31 (1986) 997;
 Romay, Diban and Urtiaga, Polymers 13 (2021) 678; Hansen, *Hansen Solubility Parameters* (2007);
-Mulder, *Basic Principles of Membrane Technology* (1996); Ishaque, *Development of novel
+Mulder, *Basic Principles of Membrane Technology* (1996); Wijmans, Baaij and Smolders, J. Membr. Sci. 14 (1983) 263;
+Reuvers, van den Berg and Smolders, J. Membr. Sci. 34 (1987) 45; Reuvers and Smolders, J. Membr. Sci. 34 (1987) 67; Ishaque, *Development of novel
 polymeric/inorganic composite membranes for the application in gas phase membrane reactors*,
 Master's thesis, Technische Universität Hamburg (2020), https://publications.hereon.de/id/38756/.
 
