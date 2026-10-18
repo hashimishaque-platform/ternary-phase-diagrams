@@ -19,11 +19,11 @@ META = {
     'name': 'Ternary phase diagrams',
     'title': 'Flory-Huggins ternary phase diagram calculator | Hashim Ishaque',
     'headline': 'Ternary phase diagrams for polymer, solvent and non-solvent systems',
-    'description': ('Ternary phase diagrams for membrane casting, in the browser: Flory-Huggins binodal, spinodal, '
-                    'tie-lines and critical point for polymer, solvent and non-solvent.'),
+    'description': ('Ternary phase diagrams for membrane casting: Flory-Huggins binodal, spinodal, tie-lines and '
+                    'critical point of polymer, solvent, non-solvent. CSV download.'),
     'image_alt': 'Ternary phase diagram of Torlon, NMP and 2-propanol with the binodal, the spinodal and tie-lines',
     'keywords': ('ternary phase diagram, Flory-Huggins, binodal, spinodal, tie-line, critical point, cloud point, '
-                 'phase inversion, membrane casting, polymer solution'),
+                 'phase inversion, membrane casting, polymer solution, CSV'),
     'languages': ['JavaScript', 'Python'],
     'about': [
         ('Flory-Huggins solution theory', 'https://en.wikipedia.org/wiki/Flory%E2%80%93Huggins_solution_theory'),
