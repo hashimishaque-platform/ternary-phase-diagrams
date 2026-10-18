@@ -105,6 +105,19 @@ other systems.
       </fieldset>
 
       <fieldset>
+        <legend>Casting</legend>
+        <table class="form">
+          <tr><td colspan="2"><b>Dope</b> (casting solution)</td></tr>
+          <tr><td><label for="d-p">Polymer</label></td><td><input type="number" id="d-p" step="0.5" min="0" max="100"> <span class="unit"></span></td></tr>
+          <tr><td><label for="d-n">Non-solvent</label></td><td><input type="number" id="d-n" step="0.5" min="0" max="100"> <span class="unit"></span></td></tr>
+          <tr><td colspan="2"><b>Coagulation bath</b> (solvent and non-solvent)</td></tr>
+          <tr><td><label for="b-s">Solvent</label></td><td><input type="number" id="b-s" step="1" min="0" max="100"> <span class="unit"></span></td></tr>
+        </table>
+        <p style="margin-top:6px"><input type="button" id="c-go" value="Show"> <input type="button" id="c-off" value="Hide"></p>
+        <div id="cast-out" class="small" aria-live="polite"></div>
+      </fieldset>
+
+      <fieldset>
         <legend>Download (CSV)</legend>
         <input type="button" id="dl-bin" value="Binodal">
         <input type="button" id="dl-spin" value="Spinodal">
@@ -155,6 +168,35 @@ polymer-lean phase nucleates, which usually gives a porous, sponge-like structur
 critical point the polymer-rich phase nucleates as droplets, which tends to give a weak,
 nodular structure. In a cloud-point titration, non-solvent is added to a polymer solution, so
 the composition moves straight toward the non-solvent corner until the solution turns turbid.
+</p>
+
+<h2>Casting: dope, bath and mixing line</h2>
+<p>
+The Casting box takes a dope (the casting solution) and a coagulation bath of solvent and
+non-solvent. It draws the dope as a diamond and the straight line from the dope to the bath.
+Every mixture of the two lies on that line, by mass balance. The line is straight in volume
+fractions, because the lattice model has no volume change on mixing, and it is also straight
+in weight fractions. The box reports three numbers:
+</p>
+<ul>
+<li><b>Cloud point of the dope.</b> How much more non-solvent the dope can take before it turns
+turbid. A small margin means the dope is close to the binodal. Adding non-solvent to the dope
+in this way is known to shift demixing toward instantaneous and to thin the skin (Reuvers and
+Smolders 1987, Part II).</li>
+<li><b>Entry point.</b> Where the mixing line enters the two-phase region, and at what polymer
+content compared with the critical point.</li>
+<li><b>Bath limit.</b> The most solvent the bath can hold while the mixing line still reaches the
+two-phase region. Solvent in the bath slows down precipitation (Wijmans, Baaij and Smolders
+1983). Past this limit the overall mixture stays one phase in the model.</li>
+</ul>
+<p>
+The mixing line is not the path that the film follows. During immersion, solvent diffuses out
+faster or slower than non-solvent diffuses in, so the polymer content near the surface rises
+first and the local composition follows a curved path that depends on time and on depth in the
+film (Reuvers, van den Berg and Smolders 1987, Part I). The mixing line only shows where the
+whole system ends up. The bath limit is therefore a guide to the order of magnitude, not a sharp
+threshold. Whether demixing is instantaneous or delayed, and the structure it gives, needs the
+diffusion model, and this page does not solve it.
 </p>
 
 <h2>Fit to measured cloud points</h2>
@@ -263,6 +305,9 @@ two-phase region starts on that side.
 <li>Altena, F. W.; Smolders, C. A. Calculation of liquid-liquid phase separation in a ternary system of a polymer in a mixture of a solvent and a nonsolvent. <i>Macromolecules</i> 15 (1982) 1491 to 1497.</li>
 <li>Yilmaz, L.; McHugh, A. J. Analysis of nonsolvent-solvent-polymer phase diagrams and their relevance to membrane formation modeling. <i>J. Appl. Polym. Sci.</i> 31 (1986) 997 to 1018.</li>
 <li>Romay, M.; Diban, N.; Urtiaga, A. Thermodynamic modeling and validation of the temperature influence in ternary phase polymer systems. <i>Polymers</i> 13 (2021) 678. <a href="https://doi.org/10.3390/polym13050678" target="_blank" rel="noopener">doi:10.3390/polym13050678</a></li>
+<li>Reuvers, A. J.; van den Berg, J. W. A.; Smolders, C. A. Formation of membranes by means of immersion precipitation. Part I. A model to describe mass transfer during immersion precipitation. <i>J. Membr. Sci.</i> 34 (1987) 45 to 65. <a href="https://doi.org/10.1016/S0376-7388(00)80020-4" target="_blank" rel="noopener">doi:10.1016/S0376-7388(00)80020-4</a></li>
+<li>Reuvers, A. J.; Smolders, C. A. Formation of membranes by means of immersion precipitation. Part II. The mechanism of formation of membranes prepared from the system cellulose acetate, acetone, water. <i>J. Membr. Sci.</i> 34 (1987) 67 to 86. <a href="https://doi.org/10.1016/S0376-7388(00)80021-6" target="_blank" rel="noopener">doi:10.1016/S0376-7388(00)80021-6</a></li>
+<li>Wijmans, J. G.; Baaij, J. P. B.; Smolders, C. A. The mechanism of formation of microporous or skinned membranes produced by immersion precipitation. <i>J. Membr. Sci.</i> 14 (1983) 263 to 274. <a href="https://doi.org/10.1016/0376-7388(83)80005-2" target="_blank" rel="noopener">doi:10.1016/0376-7388(83)80005-2</a></li>
 <li>Hansen, C. M. <i>Hansen Solubility Parameters: A User's Handbook,</i> 2nd ed. CRC Press, 2007.</li>
 <li>Mulder, M. <i>Basic Principles of Membrane Technology,</i> 2nd ed. Kluwer, 1996.</li>
 <li>Ishaque, H. Development of novel polymeric/inorganic composite membranes for the application in gas phase membrane reactors. Master's thesis, Technische Universität Hamburg, 2020. Figure 36 (cloud points). <a href="https://publications.hereon.de/id/38756/" target="_blank" rel="noopener">publications.hereon.de/id/38756</a></li>
@@ -336,7 +381,7 @@ const CLOUD_POINTS = /*CLOUDPOINTS*/;
 const CALIBRATED = { 'Torlon|NMP|IPA': CLOUD_POINTS.NMP, 'Torlon|DMF|IPA': CLOUD_POINTS.DMF };
 
 // ---------- state ----------
-const state = { units: 'wt', zoom: 'corner', custom: false, test: null };
+const state = { units: 'wt', zoom: 'corner', custom: false, test: null, cast: null };
 const $ = (id) => document.getElementById(id);
 const sys = () => ({ p: $('sel-p').value, s: $('sel-s').value, n: $('sel-n').value });
 const sysKey = () => { const k = sys(); return `${k.p}|${k.s}|${k.n}`; };
@@ -553,9 +598,11 @@ function redraw() {
       el('rect', { x: p[0] - 3.5, y: p[1] - 3.5, width: 7, height: 7, fill: '#ffffff', stroke: '#000000', 'stroke-width': 1.2 }, g);
     }
   }
+  const cast = state.cast ? drawCast(g, B) : null;
   if (state.test) drawTest(g, P, B);
   el('polygon', { points: `${VS} ${VN} ${VP}`, fill: 'none', stroke: '#000000', 'stroke-width': 1 });
   updateCaption(names, B, closed, spin.length > 0, !!data);
+  updateCast(cast, B);
   updateReadout(P, B, closed);
   updateResult(P, B);
 }
@@ -575,12 +622,68 @@ function drawTest(g, P, B) {
   el('line', { x1: p[0], y1: p[1] - 6, x2: p[0], y2: p[1] + 6, stroke: '#000000', 'stroke-width': 1.6 }, g);
 }
 
+// ---------- casting ----------
+function castLimits(B) {
+  const c = state.cast;
+  if (!B) return { entry: null, cloud: null, limit: null };
+  return { entry: firstEntry(c.dope, c.bath, B.curve), cloud: dopeCloudPoint(c.dope, B.curve), limit: bathSolventLimit(c.dope, B.curve) };
+}
+
+function drawCast(g, B) {
+  const c = state.cast;
+  const r = castLimits(B);
+  const a = volXY(c.dope), b = volXY(c.bath);
+  el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: '#000000', 'stroke-width': 1.2, 'stroke-dasharray': '2 3' }, g);
+  if (r.entry && r.entry.t > 0) { const e = volXY(r.entry.point); el('circle', { cx: e[0], cy: e[1], r: 3.5, fill: '#ffffff', stroke: '#000000', 'stroke-width': 1.3 }, g); }
+  el('polygon', { points: `${a[0]},${a[1] - 6} ${a[0] + 5},${a[1]} ${a[0]},${a[1] + 6} ${a[0] - 5},${a[1]}`, fill: '#000000' });
+  return r;
+}
+
+function updateCast(r, B) {
+  const box = $('cast-out');
+  if (!state.cast) { box.innerHTML = '<p>Enter a dope and a bath and press Show. The mixing line is drawn on the diagram.</p>'; return; }
+  const u = unitLabel(), c = state.cast;
+  const d = toDisp(c.dope), bth = toDisp(c.bath);
+  const out = [`<p>Dope: ${pct(d[2])} ${u} polymer, ${pct(d[0])} ${u} non-solvent, ${pct(d[1])} ${u} solvent. Bath: ${pct(bth[1])} ${u} solvent.</p>`];
+  if (!B) { out.push('<p>There is no binodal for these parameters, so the film would not demix by liquid-liquid separation in this model.</p>'); box.innerHTML = out.join(''); return; }
+  if (r.entry && r.entry.t === 0) { out.push('<p>The dope itself is in the two-phase region. It is not a clear casting solution.</p>'); box.innerHTML = out.join(''); return; }
+  if (r.cloud) {
+    const q = toDisp(r.cloud.point);
+    out.push(`<p>Cloud point of the dope: it turns turbid at ${pct(q[0])} ${u} non-solvent, so ${(100 * (q[0] - d[0])).toFixed(1)} ${u} more non-solvent than it has now. A small margin means the dope is close to the binodal.</p>`);
+  }
+  if (r.entry) {
+    const e = toDisp(r.entry.point);
+    const cr = toDisp(B.critical), closed = B.ties[B.ties.length - 1].len < 0.03;
+    const side = !closed ? '' : e[2] > cr[2]
+      ? ` This is above the critical point (${pct(cr[2])} ${u} polymer), where the polymer-lean phase nucleates.`
+      : ` This is below the critical point (${pct(cr[2])} ${u} polymer), where the polymer-rich phase nucleates as droplets.`;
+    out.push(`<p>The mixing line enters the two-phase region at ${pct(e[2])} ${u} polymer and ${pct(e[0])} ${u} non-solvent (open circle).${side}</p>`);
+  } else {
+    out.push('<p>The mixing line does not reach the two-phase region: every mixture of this dope and this bath is one phase in the model. See Casting below the diagram for what this means for a real film.</p>');
+  }
+  if (r.limit != null) {
+    const L = toDisp([1 - r.limit, r.limit, 0]);
+    out.push(r.limit >= 1 ? '<p>Any bath composition gives a mixing line that reaches the two-phase region.</p>'
+      : `<p>Bath limit: with more than ${pct(L[1])} ${u} solvent in the bath, the mixing line no longer reaches the two-phase region.</p>`);
+  }
+  box.innerHTML = out.join('');
+}
+
+function readCast() {
+  const p = num('d-p', 0) / 100, n = num('d-n', 0) / 100, b = num('b-s', 0) / 100;
+  if (p <= 0 || n < 0 || p + n >= 1) return 'In the dope, polymer and non-solvent must add up to less than 100 %, with some polymer.';
+  if (b < 0 || b >= 1) return 'The bath solvent must be at least 0 and below 100 %.';
+  state.cast = { dope: fromDisp([n, 1 - p - n, p]), bath: fromDisp([1 - b, b, 0]) };
+  return null;
+}
+
 function updateCaption(names, B, closed, hasSpin, hasData) {
   const parts = [`<b>Figure 1.</b> ${names.p} / ${names.s} / ${names.n}, in ${state.units === 'wt' ? 'weight' : 'volume'} percent.`];
   if (B) parts.push('Red line: binodal. Grey: two-phase region. Thin grey lines: tie-lines.');
   if (hasSpin) parts.push('Blue dashed line: spinodal.');
   if (closed) parts.push('Dot: critical point.');
   if (hasData) parts.push('Squares: measured cloud points.');
+  if (state.cast) parts.push('Diamond: the dope. Dotted line: the mixing line from the dope to the coagulation bath, with an open circle where it enters the two-phase region.');
   if (state.test) parts.push('Cross: your composition, with its tie-line if it splits.');
   $('caption').innerHTML = parts.join(' ');
 }
@@ -666,6 +769,7 @@ function syncInputs() {
   const u = unitLabel();
   document.querySelectorAll('.unit').forEach((x) => (x.textContent = u));
   if (state.test) { const d = toDisp(state.test); $('t-p').value = pct(d[2]); $('t-n').value = pct(d[0]); }
+  if (state.cast) { const d = toDisp(state.cast.dope), b = toDisp(state.cast.bath); $('d-p').value = pct(d[2]); $('d-n').value = pct(d[0]); $('b-s').value = pct(b[1]); }
   const p = parseFloat($('t-p').value) || 0, n = parseFloat($('t-n').value) || 0;
   $('t-s').textContent = `Solvent is the rest: ${(100 - p - n).toFixed(1)} ${u}.`;
 }
@@ -786,8 +890,16 @@ plot.addEventListener('click', (ev) => {
   setTest([s * lN, 1 - s * (lN + lP), s * lP]);
 });
 
+$('c-go').addEventListener('click', () => {
+  const err = readCast();
+  if (err) { $('cast-out').innerHTML = `<p>${err}</p>`; return; }
+  redraw();
+});
+$('c-off').addEventListener('click', () => { state.cast = null; redraw(); });
+
 // Example composition on load: 10 wt % Torlon, 30 wt % 2-propanol.
 state.test = wtToVol([0.30, 0.60, 0.10], rho());
+$('d-p').value = '15.0'; $('d-n').value = '0.0'; $('b-s').value = '0.0';
 updateStatus();
 syncInputs();
 buildValidation();
