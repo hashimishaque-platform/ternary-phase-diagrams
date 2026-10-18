@@ -70,7 +70,7 @@
      "sameAs": "https://en.wikipedia.org/wiki/Synthetic_membrane"
     }
    ],
-   "keywords": "ternary phase diagram, Flory-Huggins, binodal, spinodal, tie-line, critical point, cloud point, phase inversion, membrane casting, polymer solution, casting solution, coagulation bath, CSV",
+   "keywords": "ternary phase diagram, Flory-Huggins, binodal, spinodal, tie-line, critical point, cloud point, phase inversion, membrane casting, polymer solution, casting solution, coagulation bath, Hereon, PAN, PES, PVDF, PEI, CSV",
    "breadcrumb": {
     "@id": "https://hashimishaque.com/ternary-phase-diagrams/#breadcrumb"
    }
@@ -215,6 +215,7 @@ table.data { border-collapse: collapse; margin: 6px 0 10px 0; font-size: 15px; }
 table.data th, table.data td { border: 1px solid #808080; padding: 2px 6px; text-align: right; vertical-align: top; }
 table.data th { font-weight: bold; }
 table.data th:first-child, table.data td:first-child { text-align: left; }
+table.left th, table.left td { text-align: left; }
 table.data caption { text-align: left; font-weight: bold; padding-bottom: 4px; }
 .scroll { overflow-x: auto; max-width: 100%; }
 pre { font-size: 14px; overflow-x: auto; margin: 0 0 10px 0; }
@@ -377,6 +378,50 @@ threshold. Whether demixing is instantaneous or delayed, and the structure it gi
 diffusion model, and this page does not solve it.
 </p>
 
+<h2>Polymers used for membranes at Hereon</h2>
+<p>
+Helmholtz-Zentrum Hereon in Geesthacht (formerly GKSS and Helmholtz-Zentrum Geesthacht) makes
+polymer membranes from the materials below. The table gives the casting solution and bath as
+reported in the cited source, and whether the calculator on this page covers the system. Most
+of these membranes are made by immersion precipitation. Some are thin selective layers coated
+onto a porous support, which is not a phase inversion step, so a ternary diagram does not apply
+to them.
+</p>
+<div class="scroll">
+<table class="data left">
+<tr><th>Polymer</th><th>Use</th><th>Casting solution and bath, as reported</th><th>In the calculator</th><th>Source</th></tr>
+<tr><td>PAN and PAN copolymers</td><td>Porous support, made by phase inversion</td><td>About 19.5 % PAN-co-glycidyl methacrylate in DMF; water or an aqueous bath</td><td>Yes, as PAN, with rough estimates</td><td>Hicke et al. 2000; Brinkmann et al. 2017</td></tr>
+<tr><td>PES (Ultrason E6020P)</td><td>Hollow fibres</td><td>25 wt % in NMP / GBL / SDS 42.5 / 57 / 0.5; water</td><td>Yes, with rough estimates. GBL is not in the solvent list</td><td>Noor 2018</td></tr>
+<tr><td>PVDF (Kynar Flex)</td><td>Hollow fibres</td><td>25 wt % in NMP; water</td><td>Yes, with rough estimates</td><td>Noor 2018</td></tr>
+<tr><td>PEI (Ultem 1000)</td><td>Hollow fibres</td><td>17.5 and 25 wt % in NMP / GBL 73 / 27, or 25 wt % in DMF / THF 60 / 40; water</td><td>Not yet, see below</td><td>Noor 2018</td></tr>
+<tr><td>Cellulose acetate (CA 398-30)</td><td>Macroporous films, hollow fibres</td><td>8 and 12 wt % in 1,4-dioxane; bath not stated</td><td>Yes, with rough estimates. Dioxane is not in the solvent list</td><td>Noor 2018</td></tr>
+<tr><td>Torlon 4000HV (polyamide-imide)</td><td>Asymmetric membranes</td><td>NMP or DMF, cloud points with 2-propanol</td><td>Yes, fitted to the cloud points</td><td>Ishaque 2020</td></tr>
+<tr><td>Matrimid 5218 (polyimide)</td><td>Asymmetric and thin-film composite membranes</td><td>Not stated in the record</td><td>Yes, as polyimide (Matrimid type), with rough estimates</td><td>Shishatskiy et al. 2006</td></tr>
+<tr><td>PS-b-P4VP</td><td>Isoporous membranes, by self-assembly and phase inversion</td><td>17 to 30 wt % in DMF / THF 50 / 50 or 60 / 40, or 26.5 wt % in THF / DMF 35 / 65 with 2 s in air; water</td><td>No. A self-assembling block copolymer in a solvent mixture is outside a one-polymer, three-component model</td><td>Noor 2018; Dami et al. 2017</td></tr>
+<tr><td>PS-b-PB-b-PS (Styro Clear GH 62)</td><td>Outer layer of hollow fibres</td><td>28 wt % in NMP / THF 70 / 30 or DMF / THF 60 / 40; water</td><td>No, for the same reason</td><td>Noor 2018</td></tr>
+<tr><td>PIM-1</td><td>Thin selective layer on PAN, organic solvent nanofiltration</td><td>Coating</td><td>No, not phase inversion</td><td>Fritsch et al. 2012</td></tr>
+<tr><td>PolyActive (PEO-PBT)</td><td>CO<sub>2</sub> selective layer on a PDMS gutter layer and a PAN support</td><td>Roller coating</td><td>No, not phase inversion</td><td>Brinkmann et al. 2017</td></tr>
+<tr><td>Pebax MH 1657</td><td>Selective layer on PDMS-coated PAN</td><td>0.5 to 3 wt % in ethanol / water 70 / 30, solvent evaporated</td><td>No, not phase inversion</td><td>Lillepärg et al. 2016</td></tr>
+<tr><td>PDMS</td><td>Gutter and protective layers</td><td>Roller coating</td><td>No, not phase inversion</td><td>Brinkmann et al. 2017</td></tr>
+</table>
+</div>
+<p>
+<b>Why PEI is not in the calculator yet.</b> The obvious way to estimate χ is from Hansen
+solubility parameters, χ = V/(RT) [(Δδ<sub>D</sub>)² + ¼ (Δδ<sub>P</sub>)² + ¼ (Δδ<sub>H</sub>)²]
+(Hansen 2007). This is how χ<sub>12</sub> for 2-propanol is estimated on this page. For Ultem the
+published values are δ<sub>D</sub> = 21.1, δ<sub>P</sub> = 6.7 and δ<sub>H</sub> = 8.1 MPa<sup>1/2</sup>
+(Syeda et al. 2024, from Hansen 2007 and Chung and Xu 1998). With NMP (18.0, 12.3 and
+7.2 MPa<sup>1/2</sup>, molar volume 96.5 cm³/mol) at 25 °C this gives χ<sub>23</sub> = 0.69. That is
+above the value at which a long-chain polymer stops dissolving (0.54 for n<sub>3</sub> = 600), so
+the model would say NMP does not dissolve Ultem. In practice Ultem is cast from NMP. The Hansen
+estimate is therefore not good enough for χ<sub>23</sub> here, and PEI will be added once published
+interaction parameters or cloud points are found.
+</p>
+<p>
+The other polymers in the list that the calculator covers use rough estimates, except Torlon.
+Their diagrams show the shape and the trends, not exact numbers.
+</p>
+
 <h2>Fit to measured cloud points</h2>
 <p>
 Cloud points of Torlon 4000HV in NMP and in DMF, titrated with 2-propanol, are given in
@@ -485,6 +530,14 @@ two-phase region starts on that side.
 <li>Romay, M.; Diban, N.; Urtiaga, A. Thermodynamic modeling and validation of the temperature influence in ternary phase polymer systems. <i>Polymers</i> 13 (2021) 678. <a href="https://doi.org/10.3390/polym13050678" target="_blank" rel="noopener">doi:10.3390/polym13050678</a></li>
 <li>Reuvers, A. J.; van den Berg, J. W. A.; Smolders, C. A. Formation of membranes by means of immersion precipitation. Part I. A model to describe mass transfer during immersion precipitation. <i>J. Membr. Sci.</i> 34 (1987) 45 to 65. <a href="https://doi.org/10.1016/S0376-7388(00)80020-4" target="_blank" rel="noopener">doi:10.1016/S0376-7388(00)80020-4</a></li>
 <li>Reuvers, A. J.; Smolders, C. A. Formation of membranes by means of immersion precipitation. Part II. The mechanism of formation of membranes prepared from the system cellulose acetate, acetone, water. <i>J. Membr. Sci.</i> 34 (1987) 67 to 86. <a href="https://doi.org/10.1016/S0376-7388(00)80021-6" target="_blank" rel="noopener">doi:10.1016/S0376-7388(00)80021-6</a></li>
+<li>Hicke, H.-G.; Lehmann, I.; Becker, M.; Ulbricht, M.; Malsch, G.; Paul, D. Solvent and acid resistant membrane on the basis of polyacrylnitrile (PAN) and a comonomer copolymerized therewith. US patent 6,159,370, GKSS Forschungszentrum Geesthacht, 2000. <a href="https://patents.google.com/patent/US6159370" target="_blank" rel="noopener">patents.google.com/patent/US6159370</a></li>
+<li>Noor, N. Isoporous double layer hollow fiber by co-extrusion for membrane and other applications. Dissertation, Universität Hamburg, 2018 (work at Helmholtz-Zentrum Geesthacht). <a href="https://ediss.sub.uni-hamburg.de/bitstream/ediss/8106/1/Dissertation.pdf" target="_blank" rel="noopener">ediss.sub.uni-hamburg.de</a></li>
+<li>Shishatskiy, S.; Nistor, C.; Popa, M.; Nunes, S. P.; Peinemann, K.-V. Comparison of asymmetric and thin-film composite membranes having Matrimid 5218 selective layer. <i>Desalination</i> 199 (2006) 193 to 194. <a href="https://doi.org/10.1016/j.desal.2006.03.044" target="_blank" rel="noopener">doi:10.1016/j.desal.2006.03.044</a></li>
+<li>Dami, S.; Abetz, C.; Fischer, B.; Radjabian, M.; Georgopanos, P.; Abetz, V. A correlation between structural features of an amphiphilic diblock copolymer in solution and the structure of the porous surface in an integral asymmetric membrane. <i>Polymer</i> (2017). <a href="https://doi.org/10.1016/j.polymer.2017.05.024" target="_blank" rel="noopener">doi:10.1016/j.polymer.2017.05.024</a></li>
+<li>Fritsch, D.; Merten, P.; Heinrich, K.; Lazar, M.; Priske, M. High performance organic solvent nanofiltration membranes: development and thorough testing of thin film composite membranes made of polymers of intrinsic microporosity (PIMs). <i>J. Membr. Sci.</i> 401 to 402 (2012) 222 to 231. <a href="https://doi.org/10.1016/j.memsci.2012.02.008" target="_blank" rel="noopener">doi:10.1016/j.memsci.2012.02.008</a></li>
+<li>Brinkmann, T.; Lillepärg, J.; Notzke, H.; Pohlmann, J.; Shishatskiy, S.; Wind, J.; Wolff, T. Development of CO<sub>2</sub> selective poly(ethylene oxide)-based membranes: from laboratory to pilot plant scale. <i>Engineering</i> 3 (2017) 485 to 493. <a href="https://doi.org/10.1016/J.ENG.2017.04.004" target="_blank" rel="noopener">doi:10.1016/J.ENG.2017.04.004</a></li>
+<li>Lillepärg, J.; Georgopanos, P.; Emmler, T.; Shishatskiy, S. Effect of the reactive amino and glycidyl ether terminated polyethylene oxide additives on the gas transport properties of Pebax bulk and thin film composite membranes. <i>RSC Adv.</i> (2016). <a href="https://pubs.rsc.org/en/content/articlehtml/2016/ra/c5ra22026b" target="_blank" rel="noopener">pubs.rsc.org</a></li>
+<li>Syeda, U. T.; Upadhyaya, L.; Loiola, L. M. D.; Emwas, A.-H.; Volkov, A.; Nunes, S. P. Thymol: nature's solvent for sustainable hollow fiber fabrication. <i>Green Chem.</i> (2024), Supplementary Information, Table S4. <a href="https://www.rsc.org/suppdata/d4/gc/d4gc01961j/d4gc01961j1.pdf" target="_blank" rel="noopener">rsc.org/suppdata</a></li>
 <li>Wijmans, J. G.; Baaij, J. P. B.; Smolders, C. A. The mechanism of formation of microporous or skinned membranes produced by immersion precipitation. <i>J. Membr. Sci.</i> 14 (1983) 263 to 274. <a href="https://doi.org/10.1016/0376-7388(83)80005-2" target="_blank" rel="noopener">doi:10.1016/0376-7388(83)80005-2</a></li>
 <li>Hansen, C. M. <i>Hansen Solubility Parameters: A User's Handbook,</i> 2nd ed. CRC Press, 2007.</li>
 <li>Mulder, M. <i>Basic Principles of Membrane Technology,</i> 2nd ed. Kluwer, 1996.</li>
