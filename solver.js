@@ -336,6 +336,35 @@ function bathSolventLimit(dope, curve) {
   return 0.5 * (lo + hi);
 }
 
+// Smallest polymer volume fraction of a dope (with non-solvent fraction ns) for which the mixing
+// line toward the bath enters the two-phase region above the critical point, that is, at a higher
+// polymer content than the critical point. Below it the polymer-rich phase nucleates as droplets.
+// Returns null when no dope up to 60 % polymer qualifies.
+function minPolymerAboveCritical(ns, bath, curve, critical) {
+  const above = (p) => {
+    const e = firstEntry([ns, 1 - ns - p, p], bath, curve);
+    return e && e.t > 0 && e.point[2] > critical[2];
+  };
+  let lo = null, hi = null;
+  for (let p = 0.005; p + ns < 0.999 && p <= 0.6; p += 0.005) {
+    if (above(p)) { hi = p; break; }
+    lo = p;
+  }
+  if (hi === null) return null;
+  if (lo === null) return hi;
+  for (let k = 0; k < 40; k++) { const m = 0.5 * (lo + hi); if (above(m)) hi = m; else lo = m; }
+  return hi;
+}
+
+// Gravimetric porosity (Ali et al. 2018, Eq. 1): volume of the liquid held in the pores over the
+// volume of liquid plus polymer. wWet and wDry are the wet and dry membrane masses, rhoL and rhoP
+// the densities of the wetting liquid and of the polymer.
+function gravimetricPorosity(wWet, wDry, rhoL, rhoP) {
+  if (!(wWet > wDry && wDry > 0 && rhoL > 0 && rhoP > 0)) return null;
+  const vL = (wWet - wDry) / rhoL, vP = wDry / rhoP;
+  return vL / (vL + vP);
+}
+
 // ---------- export ----------
 
 // Spinodal over the whole triangle, in volume fractions [non-solvent, solvent, polymer].
@@ -461,5 +490,5 @@ function spinodalCSV(lines, info) {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { muFn, spinodalDet, solve, newton, binaryEdge, tieAt, traceBinodal, pointInPolygon, tieThrough, distanceToCurve, locallyStable, proj, inTwoPhase, cloudPoint, volToWt, wtToVol, spinodalLines, csvNum, firstEntry, dopeCloudPoint, bathSolventLimit, binodalCSV, tieLinesCSV, spinodalCSV };
+  module.exports = { muFn, spinodalDet, solve, newton, binaryEdge, tieAt, traceBinodal, pointInPolygon, tieThrough, distanceToCurve, locallyStable, proj, inTwoPhase, cloudPoint, volToWt, wtToVol, spinodalLines, csvNum, firstEntry, dopeCloudPoint, bathSolventLimit, minPolymerAboveCritical, gravimetricPorosity, binodalCSV, tieLinesCSV, spinodalCSV };
 }

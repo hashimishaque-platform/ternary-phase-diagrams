@@ -23,7 +23,7 @@ META = {
                     'dope cloud point and coagulation bath mixing line. CSV download.'),
     'image_alt': 'Ternary phase diagram of Torlon, NMP and 2-propanol with the binodal, the spinodal and tie-lines',
     'keywords': ('ternary phase diagram, Flory-Huggins, binodal, spinodal, tie-line, critical point, cloud point, '
-                 'phase inversion, membrane casting, polymer solution, casting solution, coagulation bath, Hereon, PAN, PES, PVDF, PEI, CSV'),
+                 'phase inversion, membrane casting, polymer solution, casting solution, coagulation bath, Hereon, PAN, PES, PVDF, PEI, macrovoids, porosity, PVP, PEG, CSV'),
     'languages': ['JavaScript', 'Python'],
     'about': [
         ('Flory-Huggins solution theory', 'https://en.wikipedia.org/wiki/Flory%E2%80%93Huggins_solution_theory'),
