@@ -10,7 +10,11 @@ Guidance for choosing a dope and a coagulation bath. Every rule is cited, and re
 - [ ] Recipe suggestions: for a target structure, suggest ranges for the polymer content, non-solvent in the dope and solvent in the bath from the diagram of the chosen system, with the reasoning shown.
 - [ ] Porosity estimates only where a published correlation exists for that polymer, solvent and bath, with its source and range of validity. The page says so where none exists.
 - [ ] Pore-forming additives (PVP, PEG): the published trends and their sources, without a four-component model.
-- [ ] More polymers (for example PEI, PBI, PVC) only where interaction parameters or cloud points are published.
+- [x] A cited table of the polymers used for membranes at Hereon, with the casting solution and bath from the source and whether the calculator covers each one. (2026-10-18)
+- [ ] PEI (Ultem 1000) in the calculator. Hansen parameters alone give chi23 = 0.69 with NMP, which wrongly says NMP does not dissolve Ultem, so this waits for published interaction parameters or cloud points.
+- [ ] 1,4-dioxane and GBL as solvents (used at Hereon for CA, PES and PEI), with cited Hansen parameters and chi23 values for each polymer, or a note where none are published.
+- [ ] Replace the rough-estimate parameters of PAN, PES, PVDF, CA and the polyimide with published values where they exist (for example Romay, Diban and Urtiaga 2021 for PES and PVDF with NMP, DMAc and water).
+- [ ] More polymers (for example PBI, PVC) only where interaction parameters or cloud points are published.
 
 ## Export
 - [x] Download the binodal, the spinodal and the tie-lines of the current diagram as CSV files, in wt % and in vol %. (2026-10-18)
