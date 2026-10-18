@@ -105,6 +105,14 @@ other systems.
       </fieldset>
 
       <fieldset>
+        <legend>Download (CSV)</legend>
+        <input type="button" id="dl-bin" value="Binodal">
+        <input type="button" id="dl-spin" value="Spinodal">
+        <input type="button" id="dl-tie" value="Tie-lines">
+        <p class="small" id="dl-note" style="margin-top:4px">The current diagram, in wt % and in vol %.</p>
+      </fieldset>
+
+      <fieldset>
         <legend>Test a composition</legend>
         <table class="form">
           <tr><td><label for="t-p">Polymer</label></td><td><input type="number" id="t-p" step="0.1" min="0" max="100"> <span class="unit"></span></td></tr>
@@ -216,6 +224,17 @@ through zero, as it must at a critical point. The solver was compared with an in
 implementation in Python (SciPy): tie-lines agree to better than 10<sup>−7</sup>, critical points
 to about 3 × 10<sup>−5</sup>, and the fitted cloud points to 0.1 wt %. When you click a point in
 the two-phase region, the tie-line through it is solved exactly, not interpolated.
+</p>
+<p>
+<b>Downloads.</b> The three buttons under Download save the current diagram as CSV files, with
+every composition in wt % and in vol %. The header lines give the system, the parameters and
+the densities used to convert volume fractions to weight fractions. The binodal file has the
+polymer-rich branch, the critical point and the polymer-lean branch in order, so it plots as one
+closed curve. The tie-line file has every computed tie-line, not only the ones drawn. The
+spinodal file is computed over the whole triangle, whatever part is shown. Each spinodal point
+is found by bisection on the determinant above, so it lies on the spinodal to rounding error.
+The checks read the files back: the chemical potentials in the two phases of each tie-line still
+agree to better than 10<sup>−9</sup>, and the spinodal passes through the critical point.
 </p>
 
 <h2>Limitations</h2>
@@ -706,6 +725,29 @@ function buildValidation() {
   const where = (x) => `${pct(x.maxAt)} wt % Torlon, where the model ${x.maxSign > 0 ? 'needs more' : 'needs less'} 2-propanol than measured`;
   $('val-summary').textContent = `Each row compares the 2-propanol content at which the solution clouds, measured and calculated, at the same ratio of Torlon to solvent. With NMP the model is within ${a.maxd.toFixed(1)} wt % of every point; the largest difference is at ${where(a)}. With DMF it is within ${b.maxd.toFixed(1)} wt %; the largest difference is at ${where(b)}.`;
 }
+
+// ---------- downloads ----------
+function download(kind) {
+  const P = params(), k = sys();
+  const info = { polymer: POLYMERS[k.p].label.split(' (')[0], solvent: SOLVENTS[k.s].label, nonsolvent: NONSOLVENTS[k.n].label, params: P, rho: rho() };
+  let text;
+  if (kind === 'spinodal') text = spinodalCSV(spinodalLines(P.n3, P.c12, P.c13, P.c23), info);
+  else {
+    const B = traceBinodal(P.n3, P.c12, P.c13, P.c23);
+    if (!B) { $('dl-note').textContent = 'There is no binodal for these parameters, so there is nothing to download.'; return; }
+    text = kind === 'binodal' ? binodalCSV(B, info) : tieLinesCSV(B, info);
+  }
+  const slug = [k.p, k.s, NONSOLVENTS[k.n].label, kind].join('-').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv' }));
+  a.download = slug + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  $('dl-note').textContent = `Saved ${a.download}, in wt % and in vol %.`;
+}
+$('dl-bin').addEventListener('click', () => download('binodal'));
+$('dl-spin').addEventListener('click', () => download('spinodal'));
+$('dl-tie').addEventListener('click', () => download('tie-lines'));
 
 // ---------- events ----------
 fill('sel-p', POLYMERS, 'Torlon');

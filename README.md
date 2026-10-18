@@ -25,6 +25,8 @@ and rough estimates for the other systems.
 - Draws the spinodal, where the determinant of the second derivatives of the free energy is zero.
 - For any composition you click: stable, metastable or unstable, the two phases it splits into,
   and their shares by the lever rule.
+- Downloads the binodal, the spinodal and all tie-lines of the current diagram as CSV files, with
+  every composition in wt % and in vol % and the parameters and densities in the header lines.
 - For the two Torlon systems the parameters are fitted to the published cloud points. The page explains
   why the fit is not unique.
 
@@ -37,6 +39,10 @@ and rough estimates for the other systems.
 | Torlon / NMP / 2-propanol | 7.8 × 10<sup>−11</sup> | −1.9 × 10<sup>−5</sup> | 0.63 wt % |
 | Torlon / DMF / 2-propanol | 6.6 × 10<sup>−11</sup> | −4.4 × 10<sup>−6</sup> | 0.58 wt % |
 
+The checks also read the CSV files back. The chemical potentials of the two phases in each
+exported tie-line agree to better than 10<sup>−9</sup>, every exported spinodal point has a zero
+determinant to 2 × 10<sup>−10</sup> (relative), and the spinodal passes through the critical point.
+
 The solver was also compared with an independent implementation in Python (SciPy): tie-lines
 agree to better than 10<sup>−7</sup> and critical points to about 3 × 10<sup>−5</sup>.
 
@@ -45,7 +51,7 @@ agree to better than 10<sup>−7</sup> and critical points to about 3 × 10<sup>
 | File | Contents |
 |---|---|
 | `index.html` | The program, built from the files below |
-| `solver.js` | Flory-Huggins solver: binodal, spinodal, tie-lines, cloud points |
+| `solver.js` | Flory-Huggins solver: binodal, spinodal, tie-lines, cloud points, CSV files |
 | `template.html` | The page around the solver: materials, parameters, figure, text |
 | `data/cloud_points.csv` | The nine published cloud points, with their source |
 | `checks.js` | The checks, for Node.js 18 or newer |

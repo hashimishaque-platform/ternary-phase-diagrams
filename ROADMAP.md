@@ -4,7 +4,7 @@ Each step is developed on its own branch and merged into `main` once `node check
 A step is ticked here with the date it was merged.
 
 ## Export
-- [ ] Download the binodal, the spinodal and the tie-lines of the current diagram as CSV files, in wt % and in vol %.
+- [x] Download the binodal, the spinodal and the tie-lines of the current diagram as CSV files, in wt % and in vol %. (2026-10-18)
 - [ ] Download the table of measured and calculated cloud points as a CSV file.
 
 ## Composition-dependent interaction parameter
