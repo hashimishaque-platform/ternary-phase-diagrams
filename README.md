@@ -29,6 +29,14 @@ and rough estimates for the other systems.
   between them, gives the cloud point of the dope, where the line enters the two-phase region, and
   the most solvent the bath can hold before the line misses it. The page explains why this is a
   guide and not the diffusion path of the film.
+- Fast or slow demixing: for the dope and bath in the Casting box, lists the published factors that
+  push demixing toward instantaneous (thin top layer, macrovoids) or delayed (dense top layer,
+  sponge-like), each with its source, and names a tendency when they agree.
+- Recipe suggestions for a target structure: a lower limit on polymer content and upper limits on
+  bath solvent and dope non-solvent from the diagram, plus cited directions for each setting.
+- Porosity: no predictive formula was found for these systems, so the page says so and measures
+  porosity from wet and dry masses instead. A section summarises the published effects of PVP and
+  PEG.
 - Lists the polymers used for membranes at Hereon (PAN, PES, PVDF, PEI, CA, Torlon, Matrimid,
   PS-b-P4VP and the coating polymers), with the casting solution and bath from the cited source
   and whether the calculator covers each one.
@@ -53,6 +61,8 @@ determinant to 2 × 10<sup>−10</sup> (relative), and the spinodal passes throu
 For casting, the checks confirm that the cloud point of a dope without non-solvent equals the
 titration cloud point used in the fit, that the entry point of a mixing line lies on the binodal,
 and that the bath limit separates baths that reach the two-phase region from baths that do not.
+The lower polymer limit of the recipe is checked on both sides, and the porosity formula against a
+hand calculation.
 
 The solver was also compared with an independent implementation in Python (SciPy): tie-lines
 agree to better than 10<sup>−7</sup> and critical points to about 3 × 10<sup>−5</sup>.

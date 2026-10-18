@@ -6,15 +6,17 @@ A step is ticked here with the date it was merged.
 ## Membrane fabrication advisor
 Guidance for choosing a dope and a coagulation bath. Every rule is cited, and results are labelled as trends where the model cannot give numbers.
 - [x] Casting box: dope and bath compositions, the mixing line between them on the diagram, the cloud point of the dope and the most solvent the bath can hold before the mixing line misses the two-phase region. (2026-10-18)
-- [ ] Instantaneous or delayed demixing: a qualitative indicator from the dope cloud-point margin and the bath solvent content, with the structure it tends to give (macrovoids, sponge-like sublayer, dense or porous skin), each rule cited (Reuvers and Smolders 1987; Wijmans, Baaij and Smolders 1983; Mulder 1996).
-- [ ] Recipe suggestions: for a target structure, suggest ranges for the polymer content, non-solvent in the dope and solvent in the bath from the diagram of the chosen system, with the reasoning shown.
-- [ ] Porosity estimates only where a published correlation exists for that polymer, solvent and bath, with its source and range of validity. The page says so where none exists.
-- [ ] Pore-forming additives (PVP, PEG): the published trends and their sources, without a four-component model.
+- [x] Instantaneous or delayed demixing: a qualitative indicator from the dope cloud-point margin and the bath solvent content, with the structure it tends to give (macrovoids, sponge-like sublayer, dense or porous skin), each rule cited (Reuvers and Smolders 1987; Wijmans, Baaij and Smolders 1983; Smolders et al. 1992). (2026-10-18)
+- [x] Recipe suggestions: for a target structure, suggest ranges for the polymer content, non-solvent in the dope and solvent in the bath from the diagram of the chosen system, with the reasoning shown. (2026-10-18)
+- [x] Porosity estimates only where a published correlation exists for that polymer, solvent and bath, with its source and range of validity. The page says so where none exists. (2026-10-18)
+  No predictive correlation was found for the systems on the page, so the page says so and gives the gravimetric formula (Ali et al. 2018) to measure porosity instead.
+- [x] Pore-forming additives (PVP, PEG): the published trends and their sources, without a four-component model. (2026-10-18)
 - [x] A cited table of the polymers used for membranes at Hereon, with the casting solution and bath from the source and whether the calculator covers each one. (2026-10-18)
 - [ ] PEI (Ultem 1000) in the calculator. Hansen parameters alone give chi23 = 0.69 with NMP, which wrongly says NMP does not dissolve Ultem, so this waits for published interaction parameters or cloud points.
 - [ ] 1,4-dioxane and GBL as solvents (used at Hereon for CA, PES and PEI), with cited Hansen parameters and chi23 values for each polymer, or a note where none are published.
 - [ ] Replace the rough-estimate parameters of PAN, PES, PVDF, CA and the polyimide with published values where they exist (for example Romay, Diban and Urtiaga 2021 for PES and PVDF with NMP, DMAc and water).
 - [ ] More polymers (for example PBI, PVC) only where interaction parameters or cloud points are published.
+  Checked 2026-10-18: for PVC only one tabulated cloud point (Padilha and Borges 2019) and for PBI only Hansen parameters were found in open sources. Not enough to set three chi values.
 
 ## Export
 - [x] Download the binodal, the spinodal and the tie-lines of the current diagram as CSV files, in wt % and in vol %. (2026-10-18)
