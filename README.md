@@ -29,6 +29,9 @@ and rough estimates for the other systems.
   between them, gives the cloud point of the dope, where the line enters the two-phase region, and
   the most solvent the bath can hold before the line misses it. The page explains why this is a
   guide and not the diffusion path of the film.
+- Lists the polymers used for membranes at Hereon (PAN, PES, PVDF, PEI, CA, Torlon, Matrimid,
+  PS-b-P4VP and the coating polymers), with the casting solution and bath from the cited source
+  and whether the calculator covers each one.
 - Downloads the binodal, the spinodal and all tie-lines of the current diagram as CSV files, with
   every composition in wt % and in vol % and the parameters and densities in the header lines.
 - For the two Torlon systems the parameters are fitted to the published cloud points. The page explains
