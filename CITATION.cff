@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this program, please cite it as below."
+title: "Ternary phase diagrams: Flory-Huggins binodal, spinodal, tie-lines and critical point for polymer, solvent and non-solvent systems"
+type: software
+authors:
+  - family-names: Ishaque
+    given-names: Hashim
+version: 1.0.0
+date-released: 2026-10-20
+license: MIT
+repository-code: "https://github.com/hashimishaque-platform/ternary-phase-diagrams"
+url: "https://hashimishaque.com/ternary-phase-diagrams/"
+keywords:
+  - ternary phase diagram
+  - Flory-Huggins
+  - binodal
+  - spinodal
+  - membrane
+  - phase inversion
+  - cloud point
+abstract: >-
+  A browser program for Flory-Huggins phase diagrams of polymer, solvent and non-solvent systems, as used to plan membrane casting by phase inversion: binodal, spinodal, tie-lines, critical point, cloud points of a casting dope, and downloads of every curve. The only measured data are nine published cloud points (Ishaque 2020), cited in the program.
