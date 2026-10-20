@@ -1,5 +1,7 @@
 # Ternary phase diagrams
 
+[![checks](https://github.com/hashimishaque-platform/ternary-phase-diagrams/actions/workflows/checks.yml/badge.svg)](https://github.com/hashimishaque-platform/ternary-phase-diagrams/actions/workflows/checks.yml)
+
 Flory-Huggins phase diagrams for polymer, solvent and non-solvent systems, the diagrams used to
 plan membrane casting by phase inversion: the binodal, the spinodal, the tie-lines and the
 critical point. It is a single-page browser program with no server and no libraries.
@@ -94,6 +96,17 @@ Mulder, *Basic Principles of Membrane Technology* (1996); Wijmans, Baaij and Smo
 Reuvers, van den Berg and Smolders, J. Membr. Sci. 34 (1987) 45; Reuvers and Smolders, J. Membr. Sci. 34 (1987) 67; Ishaque, *Development of novel
 polymeric/inorganic composite membranes for the application in gas phase membrane reactors*,
 Master's thesis, Technische Universität Hamburg (2020), https://publications.hereon.de/id/38756/.
+
+## How to cite
+
+Use the "Cite this repository" box on the GitHub page, which reads `CITATION.cff`. Each
+release is archived with its own DOI on Zenodo once the archive is switched on for this
+repository. Please give the version you used.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). New models need a source and a check, and the checks
+run on every change.
 
 ## License
 
