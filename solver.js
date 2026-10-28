@@ -489,6 +489,20 @@ function spinodalCSV(lines, info) {
   return out.join('\n') + '\n';
 }
 
+// ---------- Hansen solubility parameters ----------
+// Distance between two points in Hansen space [dD, dP, dH], in MPa^1/2 (Hansen 2007):
+// Ra^2 = 4 (dD1 - dD2)^2 + (dP1 - dP2)^2 + (dH1 - dH2)^2. RED = Ra / R0.
+function hansenRa(a, b) {
+  return Math.sqrt(4 * (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2);
+}
+function hansenRED(polymer, liquid, R0) { return hansenRa(polymer, liquid) / R0; }
+// Flory-Huggins chi from the same distance, chi = V Ra^2 / (4 R T), V the molar volume of the liquid in cm3/mol
+// (cm3/mol times MPa is J/mol), T in K.
+function hansenChi(a, b, V, T) {
+  const r = hansenRa(a, b);
+  return V * r * r / (4 * 8.314462618 * (T || 298.15));
+}
+
 if (typeof module !== 'undefined') {
-  module.exports = { muFn, spinodalDet, solve, newton, binaryEdge, tieAt, traceBinodal, pointInPolygon, tieThrough, distanceToCurve, locallyStable, proj, inTwoPhase, cloudPoint, volToWt, wtToVol, spinodalLines, csvNum, firstEntry, dopeCloudPoint, bathSolventLimit, minPolymerAboveCritical, gravimetricPorosity, binodalCSV, tieLinesCSV, spinodalCSV };
+  module.exports = { muFn, spinodalDet, solve, newton, binaryEdge, tieAt, traceBinodal, pointInPolygon, tieThrough, distanceToCurve, locallyStable, proj, inTwoPhase, cloudPoint, volToWt, wtToVol, spinodalLines, csvNum, firstEntry, dopeCloudPoint, bathSolventLimit, minPolymerAboveCritical, gravimetricPorosity, binodalCSV, tieLinesCSV, spinodalCSV, hansenRa, hansenRED, hansenChi };
 }

@@ -170,5 +170,36 @@ for (const s of ['NMP', 'DMF']) {
   console.log(`Gravimetric porosity of the worked example: ${(100 * e).toFixed(2)} % (by hand 76.50 %)`);
   if (!ok6) ok = false;
 }
+// 7. Hansen distance, RED and chi (polymer films on wafers)
+{
+  const H = {};
+  for (const line of fs.readFileSync(__dirname + '/data/hansen_parameters.csv', 'utf8').split('\n')) {
+    if (!line || line.startsWith('#') || line.startsWith('name,')) continue;
+    const [name, kind, dD, dP, dH, R0, M, rho] = line.split(',');
+    H[name] = { kind, d: [+dD, +dP, +dH], R0: +R0, V: +M / +rho };
+  }
+  const bad = [];
+  const P = H.PMMA, et = H.ethanol;
+  // by hand: 4 (18.64 - 15.8)^2 + (10.52 - 8.8)^2 + (7.51 - 19.4)^2 = 32.2624 + 2.9584 + 141.3721 = 176.5929
+  const ra = S.hansenRa(P.d, et.d), handRa = Math.sqrt(176.5929);
+  if (Math.abs(ra - handRa) > 1e-12) bad.push(`Ra ${ra} against ${handRa} by hand`);
+  const red = S.hansenRED(P.d, et.d, P.R0);
+  if (Math.abs(red - handRa / 8.59) > 1e-12) bad.push('RED');
+  // chi by hand: V = 46.07 / 0.789 cm3/mol, V Ra^2 / (4 R T)
+  const handChi = (46.07 / 0.789) * 176.5929 / (4 * 8.314462618 * 298.15);
+  const chi = S.hansenChi(P.d, et.d, et.V);
+  if (Math.abs(chi - handChi) > 1e-12) bad.push('chi');
+  // the 2-propanol row of chi12 on the page was estimated this way: reproduce it to within 0.01
+  const page = { NMP: 1.10, DMF: 0.73, DMAc: 0.55, DMSO: 1.33, THF: 0.58, acetone: 0.83 };
+  let worst12 = 0;
+  for (const s in page) worst12 = Math.max(worst12, Math.abs(S.hansenChi(H['2-propanol'].d, H[s].d, H['2-propanol'].V) - page[s]));
+  if (!(worst12 < 0.01)) bad.push(`2-propanol chi12 row off by ${worst12.toFixed(3)}`);
+  // symmetry, and zero distance for identical points
+  if (S.hansenRa(P.d, et.d) !== S.hansenRa(et.d, P.d) || S.hansenRa(P.d, P.d) !== 0) bad.push('distance not symmetric');
+  // every liquid has a molar volume between 10 and 200 cm3/mol
+  for (const n in H) if (H[n].kind === 'liquid' && !(H[n].V > 10 && H[n].V < 200)) bad.push(`molar volume of ${n}`);
+  console.log(`Hansen: PMMA / ethanol Ra ${ra.toFixed(2)} MPa^1/2, RED ${red.toFixed(3)}, chi ${chi.toFixed(3)}; 2-propanol chi12 row reproduced to ${worst12.toFixed(3)}`);
+  if (bad.length) { console.log('  problems: ' + bad.join('; ')); ok = false; }
+}
 console.log(ok ? 'All checks passed.' : 'Some checks failed.');
 process.exit(ok ? 0 : 1);

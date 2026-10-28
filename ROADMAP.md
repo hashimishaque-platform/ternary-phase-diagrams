@@ -33,6 +33,11 @@ Guidance for choosing a dope and a coagulation bath. Every rule is cited, and re
 - [ ] More polymers (for example PBI, PVC) only where interaction parameters or cloud points are published.
   Checked 2026-10-18: for PVC only one tabulated cloud point (Padilha and Borges 2019) and for PBI only Hansen parameters were found in open sources. Not enough to set three chi values.
 
+## Polymer films on wafers
+- [x] Hansen distance, RED and χ of a polymer with 15 liquids, RED against molar volume, with PMMA and ethanol as the default (STMicroelectronics and LiPhy cleaning process). Checked against a hand calculation. (2026-10-28)
+- [ ] PMMA in the ternary calculator, once interaction parameters or cloud points for PMMA with a casting solvent and ethanol are published (the Hansen estimate of χ12 for ethanol and toluene is 2.22, which wrongly makes them immiscible).
+- [ ] PS, PVAc and PVA, the other polymers on the slide, with cited Hansen parameters and radii.
+
 ## Export
 - [x] Download the binodal, the spinodal and the tie-lines of the current diagram as CSV files, in wt % and in vol %. (2026-10-18)
 - [ ] Download the table of measured and calculated cloud points as a CSV file.
