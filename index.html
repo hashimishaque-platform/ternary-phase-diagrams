@@ -70,7 +70,7 @@
      "sameAs": "https://en.wikipedia.org/wiki/Synthetic_membrane"
     }
    ],
-   "keywords": "ternary phase diagram, Flory-Huggins, binodal, spinodal, tie-line, critical point, cloud point, phase inversion, membrane casting, polymer solution, casting solution, coagulation bath, Hereon, PAN, PES, PVDF, PEI, macrovoids, porosity, PVP, PEG, CSV",
+   "keywords": "ternary phase diagram, Flory-Huggins, binodal, spinodal, tie-line, critical point, cloud point, phase inversion, membrane casting, polymer solution, casting solution, coagulation bath, Hereon, PAN, PES, PVDF, PEI, macrovoids, porosity, PVP, PEG, CSV, Hansen solubility parameters, RED, environmental stress cracking, PMMA, wafer cleaning, particle removal",
    "breadcrumb": {
     "@id": "https://hashimishaque.com/ternary-phase-diagrams/#breadcrumb"
    }
@@ -542,6 +542,93 @@ The other polymers in the list that the calculator covers use rough estimates, e
 Their diagrams show the shape and the trends, not exact numbers.
 </p>
 
+<h2 id="film-cleaning">Polymer films on wafers: Hansen distance and stress cracking</h2>
+<p>
+The solubility parameters that set χ on this page are also used in semiconductor wafer cleaning.
+In a process studied by STMicroelectronics with the Laboratoire Interdisciplinaire de Physique
+(LiPhy), a PMMA film is spin-coated onto a silicon wafer that carries particles, baked, and
+immersed in ethanol. Ethanol makes the film crack (environmental stress cracking), the film comes
+off the wafer by itself, and the particles are rinsed away with it. On silicon with cerium oxide
+particles, more than 80 % of the particles were removed. PMMA and ethanol were chosen as the pair
+with Hansen solubility parameters (Moukrati, SPCC abstract).
+</p>
+<p>
+The steps are those of membrane casting: a polymer solution is cast as a film and placed in an
+alcohol. The aim is different. In membrane casting the film still holds its solvent, and the bath
+makes it demix into a porous layer. Here the film is baked first, and the liquid has to swell it
+enough to crack, without dissolving it.
+</p>
+<p>
+<b>The criterion.</b> The distance between polymer (p) and liquid (s) in Hansen space, and the
+relative energy difference RED (Hansen 2007):
+</p>
+<pre>Ra² = 4 (δD,p − δD,s)² + (δP,p − δP,s)² + (δH,p − δH,s)²
+RED = Ra / R0</pre>
+<p>
+R<sub>0</sub> is the radius of the solubility sphere of the polymer, fitted to the liquids that
+dissolve it. Below RED = 1 a liquid lies inside the sphere and is expected to dissolve the
+polymer; above 1 it lies outside. Liquids not far outside the sphere can still swell the polymer
+and make a stressed part crack, and at the same RED small molecules do this more readily than
+large ones (Hansen 2002, as summarised by Bubmann et al. 2022). This is why the slide of the talk
+plots RED against the molar volume of the liquid, with a band of possible stress cracking between
+a dissolving zone below and an inert zone above, both boundaries falling toward larger molecules.
+</p>
+<p>
+<b>Link to χ.</b> The same distance gives the Flory-Huggins parameter used on this page,
+χ = V Ra² / (4 R T), with V the molar volume of the liquid. With the molar volume of 2-propanol
+this reproduces the 2-propanol row of χ<sub>12</sub> used above to within 0.01.
+</p>
+
+<div class="tool">
+  <div class="fig">
+    <svg id="red-plot" viewBox="0 0 640 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RED against molar volume"></svg>
+    <p class="caption" id="red-caption"></p>
+  </div>
+  <div class="side">
+    <form id="red-form" novalidate>
+      <fieldset>
+        <legend>Polymer</legend>
+        <table class="form">
+          <tr><td><label for="h-d">δ<sub>D</sub></label></td><td><input type="number" id="h-d" step="0.01" min="10" max="30"> MPa<sup>1/2</sup></td></tr>
+          <tr><td><label for="h-p">δ<sub>P</sub></label></td><td><input type="number" id="h-p" step="0.01" min="0" max="30"> MPa<sup>1/2</sup></td></tr>
+          <tr><td><label for="h-h">δ<sub>H</sub></label></td><td><input type="number" id="h-h" step="0.01" min="0" max="45"> MPa<sup>1/2</sup></td></tr>
+          <tr><td><label for="h-r">R<sub>0</sub></label></td><td><input type="number" id="h-r" step="0.01" min="1" max="30"> MPa<sup>1/2</sup></td></tr>
+        </table>
+        <p style="margin-top:6px"><input type="submit" value="Compute"> <input type="button" id="h-reset" value="PMMA"></p>
+        <p class="small">Defaults: PMMA, Hansen (2007) as given by Li et al. (2014). Liquids: Hansen (2007), see <code>data/hansen_parameters.csv</code>.</p>
+      </fieldset>
+    </form>
+  </div>
+</div>
+<div class="scroll">
+<table class="data" id="red-table"></table>
+</div>
+<p id="red-summary"></p>
+<p>
+<b>What the numbers say for PMMA and ethanol.</b> With the handbook values, ethanol is at
+RED = 1.55 and χ = 1.04: outside the sphere and a non-solvent, inside the band where the slide
+expects cracking. On the slide the PMMA / ethanol point sits at about 1.4, read from a photo. PMMA
+parameter sets in the literature differ. With 17.7, 6.7 and 6.2 MPa<sup>1/2</sup>
+(Bubmann et al. 2022) and the same R<sub>0</sub>, which belongs to the handbook set, ethanol is at
+RED = 1.62. The conclusion, outside the sphere and in the cracking band, holds for both sets; the
+exact number does not.
+</p>
+<p>
+<b>Where the sphere is wrong.</b> Toluene comes out at RED = 1.25, outside the sphere, yet the
+study dissolves PMMA in toluene to spin-coat it, as it does with butanone (0.70) and chloroform
+(0.91). The sphere is a fit to many liquids and misjudges some near its edge. The study found that
+the casting solvent changes the crack pattern, and attributes this to the adhesion of the film to
+the wafer (Moukrati). Solubility parameters do not describe adhesion, so this page cannot predict
+that effect.
+</p>
+<p>
+<b>Why PMMA is not in the ternary calculator.</b> A PMMA / casting solvent / ethanol diagram would
+show where solvent left in the film makes it demix instead of crack. But the Hansen estimate gives
+χ<sub>12</sub> = 2.22 for ethanol with toluene. Above 2 the model says the two liquids separate,
+and in fact they mix in all proportions. As for PEI above, PMMA will be added to the calculator
+once published interaction parameters or cloud points are found.
+</p>
+
 <h2>Fit to measured cloud points</h2>
 <p>
 Cloud points of Torlon 4000HV in NMP and in DMF, titrated with 2-propanol, are given in
@@ -671,6 +758,11 @@ two-phase region starts on that side.
 <li>Méndez, M. L. et al. Properties of polyethersulphone ultrafiltration membranes modified with polyethylene glycols. <i>Polym. Eng. Sci.</i> 54 (2014) 1211 to 1221. <a href="https://doi.org/10.1002/pen.23637" target="_blank" rel="noopener">doi:10.1002/pen.23637</a></li>
 <li>Padilha, L. F.; Borges, C. P. PVC membranes prepared via non-solvent induced phase separation process. <i>Braz. J. Chem. Eng.</i> 36 (2019) 497 to 509. <a href="https://doi.org/10.1590/0104-6632.20190361s20170132" target="_blank" rel="noopener">doi:10.1590/0104-6632.20190361s20170132</a></li>
 <li>Wijmans, J. G.; Baaij, J. P. B.; Smolders, C. A. The mechanism of formation of microporous or skinned membranes produced by immersion precipitation. <i>J. Membr. Sci.</i> 14 (1983) 263 to 274. <a href="https://doi.org/10.1016/0376-7388(83)80005-2" target="_blank" rel="noopener">doi:10.1016/0376-7388(83)80005-2</a></li>
+<li>Hansen, C. M. On predicting environmental stress cracking in polymers. <i>Polym. Degrad. Stab.</i> 77 (2002) 43 to 53.</li>
+<li>Bubmann, T.; Shi, S.; Brueckner, A.; Menzel, T.; Ruckdäschel, H.; Schlarb, A. K.; Altstädt, V. Influence of sample wetting method on ESC-behavior of PMMA under dynamic fatigue crack propagation. <i>Materials</i> 15 (2022) 4114. <a href="https://doi.org/10.3390/ma15124114" target="_blank" rel="noopener">doi:10.3390/ma15124114</a></li>
+<li>Li, L.; Li, R.; Li, M.; Rong, Z.; Fang, T. Theoretical selection of solvent for production of electrospun PMMA fibers with wrinkled surfaces. <i>RSC Adv.</i> 4 (2014). <a href="https://doi.org/10.1039/C4RA03657C" target="_blank" rel="noopener">doi:10.1039/C4RA03657C</a></li>
+<li>Moukrati, M. Controlled cracking-induced delamination for polymer-based cleaning. Abstract, SEMI Surface Preparation and Cleaning Conference (SPCC). STMicroelectronics and Laboratoire Interdisciplinaire de Physique. <a href="https://www.semi.org/en/spcc-speaker-bio-abstract-mona-moukrati" target="_blank" rel="noopener">semi.org</a>, accessed 28 October 2026.</li>
+<li>Stenutz, R. Hansen solubility parameters. <a href="https://www.stenutz.eu/chem/hansen.php" target="_blank" rel="noopener">stenutz.eu</a>, accessed 28 October 2026.</li>
 <li>Hansen, C. M. <i>Hansen Solubility Parameters: A User's Handbook,</i> 2nd ed. CRC Press, 2007.</li>
 <li>Mulder, M. <i>Basic Principles of Membrane Technology,</i> 2nd ed. Kluwer, 1996.</li>
 <li>Ishaque, H. Development of novel polymeric/inorganic composite membranes for the application in gas phase membrane reactors. Master's thesis, Technische Universität Hamburg, 2020. Figure 36 (cloud points). <a href="https://publications.hereon.de/id/38756/" target="_blank" rel="noopener">publications.hereon.de/id/38756</a></li>
@@ -1175,6 +1267,20 @@ function spinodalCSV(lines, info) {
   out.push('line,point,' + COLS);
   lines.forEach((ln, k) => ln.forEach((v, i) => out.push([k + 1, i + 1].concat(comp(v, info.rho)).join(','))));
   return out.join('\n') + '\n';
+}
+
+// ---------- Hansen solubility parameters ----------
+// Distance between two points in Hansen space [dD, dP, dH], in MPa^1/2 (Hansen 2007):
+// Ra^2 = 4 (dD1 - dD2)^2 + (dP1 - dP2)^2 + (dH1 - dH2)^2. RED = Ra / R0.
+function hansenRa(a, b) {
+  return Math.sqrt(4 * (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2);
+}
+function hansenRED(polymer, liquid, R0) { return hansenRa(polymer, liquid) / R0; }
+// Flory-Huggins chi from the same distance, chi = V Ra^2 / (4 R T), V the molar volume of the liquid in cm3/mol
+// (cm3/mol times MPa is J/mol), T in K.
+function hansenChi(a, b, V, T) {
+  const r = hansenRa(a, b);
+  return V * r * r / (4 * 8.314462618 * (T || 298.15));
 }
 
 
@@ -1839,6 +1945,98 @@ updateStatus();
 syncInputs();
 buildValidation();
 redraw();
+
+// ---------- Hansen distance, RED and stress cracking (polymer films on wafers) ----------
+const HANSEN = [{"name": "PMMA", "kind": "polymer", "d": [18.64, 10.52, 7.51], "R0": 8.59}, {"name": "ethanol", "kind": "liquid", "d": [15.8, 8.8, 19.4], "V": 58.39}, {"name": "methanol", "kind": "liquid", "d": [15.1, 12.3, 22.3], "V": 40.45}, {"name": "2-propanol", "kind": "liquid", "d": [15.8, 6.1, 16.4], "V": 76.95}, {"name": "water", "kind": "liquid", "d": [15.5, 16.0, 42.3], "V": 18.07}, {"name": "ethylene glycol", "kind": "liquid", "d": [17.0, 11.0, 26.0], "V": 55.92}, {"name": "n-heptane", "kind": "liquid", "d": [15.3, 0.0, 0.0], "V": 147.35}, {"name": "toluene", "kind": "liquid", "d": [18.0, 1.4, 2.0], "V": 106.89}, {"name": "butanone", "kind": "liquid", "d": [16.0, 9.0, 5.1], "V": 90.14}, {"name": "chloroform", "kind": "liquid", "d": [17.8, 3.1, 5.7], "V": 80.72}, {"name": "acetone", "kind": "liquid", "d": [15.5, 10.4, 7.0], "V": 74.08}, {"name": "THF", "kind": "liquid", "d": [16.8, 5.7, 8.0], "V": 81.11}, {"name": "NMP", "kind": "liquid", "d": [18.0, 12.3, 7.2], "V": 96.43}, {"name": "DMF", "kind": "liquid", "d": [17.4, 13.7, 11.3], "V": 77.43}, {"name": "DMAc", "kind": "liquid", "d": [16.8, 11.5, 10.2], "V": 92.98}, {"name": "DMSO", "kind": "liquid", "d": [18.4, 16.4, 10.2], "V": 71.03}];
+const HP = HANSEN.find((x) => x.name === 'PMMA');
+const LIQ = HANSEN.filter((x) => x.kind === 'liquid');
+// Boundaries of the stress-cracking band as drawn on the slide of Moukrati (SPCC), read from a photo of the
+// slide; approximate, and only over the molar volumes on the slide (0 to 120 cm3/mol).
+const BAND = { vMax: 120, upper: (V) => 1.97 - 0.00275 * V, lower: (V) => 1.21 - 0.0026 * V };
+function zoneOf(red, V) {
+  if (V > BAND.vMax) return 'beyond the slide';
+  if (red < BAND.lower(V)) return 'dissolving zone';
+  if (red <= BAND.upper(V)) return 'cracking band';
+  return 'inert zone';
+}
+function hansenPolymer() {
+  const g = (id, f) => { const v = parseFloat($(id).value); return isFinite(v) ? v : f; };
+  return { d: [g('h-d', HP.d[0]), g('h-p', HP.d[1]), g('h-h', HP.d[2])], R0: Math.max(0.1, g('h-r', HP.R0)) };
+}
+function setPMMA() { $('h-d').value = HP.d[0]; $('h-p').value = HP.d[1]; $('h-h').value = HP.d[2]; $('h-r').value = HP.R0; }
+function drawRED() {
+  const P = hansenPolymer();
+  const isPMMA = P.d.every((x, i) => x === HP.d[i]) && P.R0 === HP.R0;
+  const rows = LIQ.map((l, i) => {
+    const ra = hansenRa(P.d, l.d);
+    return { n: i + 1, name: l.name, V: l.V, ra, red: ra / P.R0, chi: hansenChi(P.d, l.d, l.V) };
+  });
+  // figure
+  const svg = $('red-plot');
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  const X0 = 62, X1 = 620, Y0 = 380, Y1 = 22, VMAX = 160;
+  const RMAX = Math.max(4.5, Math.ceil(Math.max(...rows.map((r) => r.red)) * 2) / 2);
+  const sx = (v) => X0 + (X1 - X0) * v / VMAX, sy = (r) => Y0 - (Y0 - Y1) * r / RMAX;
+  const E = (tag, a) => el(tag, a, svg);
+  const T = (x, y, s, a) => txt(x, y, s, a, svg);
+  E('rect', { x: X0, y: Y1, width: X1 - X0, height: Y0 - Y1, fill: 'none', stroke: '#808080' });
+  for (let v = 0; v <= VMAX; v += 20) {
+    E('line', { x1: sx(v), y1: Y0, x2: sx(v), y2: Y0 + 5, stroke: '#000000' });
+    T(sx(v), Y0 + 19, String(v), { 'text-anchor': 'middle' });
+  }
+  for (let r = 0; r <= RMAX + 1e-9; r += 0.5) {
+    E('line', { x1: X0 - 5, y1: sy(r), x2: X0, y2: sy(r), stroke: '#000000' });
+    T(X0 - 8, sy(r) + 4, r.toFixed(1), { 'text-anchor': 'end' });
+  }
+  T((X0 + X1) / 2, Y0 + 40, 'Molar volume of the liquid, cm³/mol', { 'text-anchor': 'middle' });
+  T(18, (Y0 + Y1) / 2, 'RED', { 'text-anchor': 'middle', transform: `rotate(-90 18 ${(Y0 + Y1) / 2})` });
+  // RED = 1: surface of the solubility sphere
+  E('line', { x1: sx(0), y1: sy(1), x2: sx(VMAX), y2: sy(1), stroke: '#cc0000', 'stroke-width': 1.5 });
+  T(sx(VMAX) - 4, sy(1) - 5, 'RED = 1', { 'text-anchor': 'end', fill: '#cc0000' });
+  if (isPMMA) {
+    for (const f of [BAND.upper, BAND.lower]) {
+      E('line', { x1: sx(0), y1: sy(f(0)), x2: sx(BAND.vMax), y2: sy(f(BAND.vMax)), stroke: '#000000', 'stroke-dasharray': '6 4' });
+    }
+    T(sx(4), sy(BAND.upper(0)) - 6, 'inert', { 'font-size': 12 });
+    T(sx(4), sy(BAND.lower(0)) - 6, 'cracking band (slide)', { 'font-size': 12 });
+  }
+  // labels: try a few positions around each point and take the first that does not overlap a label or point
+  const boxes = rows.map((r) => [sx(r.V) - 4, sy(r.red) - 4, sx(r.V) + 4, sy(r.red) + 4]);
+  const hit = (b) => boxes.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
+  const lines = [];
+  for (const r of rows) {
+    const x = sx(r.V), y = sy(r.red), hot = r.name === 'ethanol';
+    E('circle', { cx: x, cy: y, r: hot ? 5 : 3.5, fill: hot ? '#000000' : '#ffffff', stroke: '#000000' });
+  }
+  for (const r of rows) {
+    const x = sx(r.V), y = sy(r.red), hot = r.name === 'ethanol';
+    const label = hot ? `${r.n} ethanol` : String(r.n), w = 7 * label.length, hgt = 12;
+    const tries = [[6, -5], [6, 13], [-6 - w, -5], [-6 - w, 13], [-w / 2, -9], [-w / 2, 21], [12, -16], [12, 26], [-12 - w, -16], [-12 - w, 26], [6, 36], [-6 - w, 36], [6, -26], [-6 - w, -26]];
+    let pick = tries[0], far = false;
+    for (const t of tries) { const b = [x + t[0], y + t[1] - hgt + 2, x + t[0] + w, y + t[1] + 2]; if (!hit(b)) { pick = t; break; } }
+    far = Math.abs(pick[1]) > 14 || pick[0] < -12 || pick[0] > 6;
+    boxes.push([x + pick[0], y + pick[1] - hgt + 2, x + pick[0] + w, y + pick[1] + 2]);
+    if (far) lines.push([x, y, x + pick[0] + (pick[0] < 0 ? w : 0), y + pick[1] - 4]);
+    T(x + pick[0], y + pick[1], label, { 'font-size': 12 });
+  }
+  for (const l of lines) E('line', { x1: l[0], y1: l[1], x2: l[2], y2: l[3], stroke: '#808080', 'stroke-width': 0.7 });
+  $('red-caption').textContent = 'RED of each liquid with the polymer against its molar volume. Numbers refer to the table. Red line: RED = 1, the surface of the solubility sphere.'
+    + (isPMMA ? ' Dashed: the boundaries of the stress-cracking band as drawn on the slide of the talk, read from a photo and only approximate, for 0 to 120 cm³/mol.' : ' The band from the slide is shown only for the PMMA defaults.');
+  // table
+  const f2 = (x) => x.toFixed(2);
+  let h = '<tr><th>No.</th><th>Liquid</th><th>V, cm³/mol</th><th>Ra, MPa<sup>1/2</sup></th><th>RED</th><th>χ</th><th>Sphere</th>' + (isPMMA ? '<th>Slide</th>' : '') + '</tr>';
+  for (const r of rows) {
+    h += `<tr><td>${r.n}</td><td style="text-align:left">${r.name}</td><td>${r.V.toFixed(1)}</td><td>${f2(r.ra)}</td><td>${f2(r.red)}</td><td>${f2(r.chi)}</td>`
+      + `<td style="text-align:left">${r.red < 1 ? 'inside' : 'outside'}</td>` + (isPMMA ? `<td style="text-align:left">${zoneOf(r.red, r.V)}</td>` : '') + '</tr>';
+  }
+  $('red-table').innerHTML = h;
+  const e = rows.find((r) => r.name === 'ethanol');
+  $('red-summary').innerHTML = `Ethanol with this polymer: Ra = ${f2(e.ra)} MPa<sup>1/2</sup>, RED = ${f2(e.red)}, χ = ${f2(e.chi)} at 25 °C. χ uses the molar volume of the liquid as the lattice site, as elsewhere on this page.`;
+}
+setPMMA();
+drawRED();
+$('red-form').addEventListener('submit', (ev) => { ev.preventDefault(); drawRED(); });
+$('h-reset').addEventListener('click', () => { setPMMA(); drawRED(); });
 })();
 </script>
 </body>

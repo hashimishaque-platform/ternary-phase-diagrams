@@ -42,6 +42,12 @@ and rough estimates for the other systems.
 - Lists the polymers used for membranes at Hereon (PAN, PES, PVDF, PEI, CA, Torlon, Matrimid,
   PS-b-P4VP and the coating polymers), with the casting solution and bath from the cited source
   and whether the calculator covers each one.
+- Polymer films on wafers: the Hansen distance Ra and RED of a polymer with 15 liquids, plotted
+  against molar volume as in Hansen's stress-cracking analysis, with the χ that the same distance
+  gives. The default is PMMA with ethanol, the pair chosen by STMicroelectronics and LiPhy for a
+  wafer-cleaning process in which ethanol cracks a PMMA film and lifts it off with the particles.
+  The page says where the solubility sphere is wrong (toluene) and why PMMA is not yet in the
+  ternary calculator.
 - Downloads the binodal, the spinodal and all tie-lines of the current diagram as CSV files, with
   every composition in wt % and in vol % and the parameters and densities in the header lines.
 - For the two Torlon systems the parameters are fitted to the published cloud points. The page explains
@@ -60,6 +66,9 @@ The checks also read the CSV files back. The chemical potentials of the two phas
 exported tie-line agree to better than 10<sup>−9</sup>, every exported spinodal point has a zero
 determinant to 2 × 10<sup>−10</sup> (relative), and the spinodal passes through the critical point.
 
+For the Hansen section, the checks compare Ra, RED and χ for PMMA and ethanol with a hand
+calculation, and reproduce the 2-propanol row of χ<sub>12</sub> on the page to within 0.006.
+
 For casting, the checks confirm that the cloud point of a dope without non-solvent equals the
 titration cloud point used in the fit, that the entry point of a mixing line lies on the binodal,
 and that the bath limit separates baths that reach the two-phase region from baths that do not.
@@ -77,6 +86,7 @@ agree to better than 10<sup>−7</sup> and critical points to about 3 × 10<sup>
 | `solver.js` | Flory-Huggins solver: binodal, spinodal, tie-lines, cloud points, CSV files |
 | `template.html` | The page around the solver: materials, parameters, figure, text |
 | `data/cloud_points.csv` | The nine published cloud points, with their source |
+| `data/hansen_parameters.csv` | Hansen parameters of PMMA and 15 liquids, with molar masses, densities and sources |
 | `checks.js` | The checks, for Node.js 18 or newer |
 | `build.py` | Puts the page together, with its title, description and preview tags: `python3 build.py` |
 | `screenshot.png`, `social.png` | Screenshot for this README, and the preview image shown when the page is shared |
@@ -92,6 +102,8 @@ water rows are only indicative.
 Flory, *Principles of Polymer Chemistry* (1953); Tompa, *Polymer Solutions* (1956); Altena and
 Smolders, Macromolecules 15 (1982) 1491; Yilmaz and McHugh, J. Appl. Polym. Sci. 31 (1986) 997;
 Romay, Diban and Urtiaga, Polymers 13 (2021) 678; Hansen, *Hansen Solubility Parameters* (2007);
+Hansen, Polym. Degrad. Stab. 77 (2002) 43; Bubmann et al., Materials 15 (2022) 4114; Li et al., RSC Adv. 4 (2014),
+doi:10.1039/C4RA03657C; Moukrati, abstract, SEMI SPCC;
 Mulder, *Basic Principles of Membrane Technology* (1996); Wijmans, Baaij and Smolders, J. Membr. Sci. 14 (1983) 263;
 Reuvers, van den Berg and Smolders, J. Membr. Sci. 34 (1987) 45; Reuvers and Smolders, J. Membr. Sci. 34 (1987) 67; Ishaque, *Development of novel
 polymeric/inorganic composite membranes for the application in gas phase membrane reactors*,

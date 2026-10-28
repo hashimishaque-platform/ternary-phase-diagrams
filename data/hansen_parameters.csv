@@ -1,0 +1,25 @@
+# Hansen solubility parameters in MPa^1/2 at 25 C, molar mass in g/mol and density in g/cm3 at 25 C.
+# Molar volume is taken as molar mass / density. R0 is the interaction radius, for polymers only.
+# Liquids: Hansen, C. M. Hansen Solubility Parameters: A User's Handbook, 2nd ed. CRC Press, 2007, Table A.1.
+#   Ethanol, methanol, 2-propanol, water, toluene, butanone, chloroform and acetone were cross-checked against
+#   the table of Stenutz (stenutz.eu/chem/hansen.php, given there in (cal/cm3)^1/2).
+#   n-Heptane and ethylene glycol agree with Table 1 of Bubmann et al., Materials 15 (2022) 4114.
+# PMMA: Hansen (2007), as given by Li, Li, Li, Rong and Fang, RSC Adv. 4 (2014), DOI 10.1039/C4RA03657C,
+#   with the interaction radius 8.59 MPa^1/2.
+name,kind,dD,dP,dH,R0,molar_mass,density
+PMMA,polymer,18.64,10.52,7.51,8.59,,
+ethanol,liquid,15.8,8.8,19.4,,46.07,0.789
+methanol,liquid,15.1,12.3,22.3,,32.04,0.792
+2-propanol,liquid,15.8,6.1,16.4,,60.10,0.781
+water,liquid,15.5,16.0,42.3,,18.015,0.997
+ethylene glycol,liquid,17.0,11.0,26.0,,62.07,1.110
+n-heptane,liquid,15.3,0.0,0.0,,100.20,0.680
+toluene,liquid,18.0,1.4,2.0,,92.14,0.862
+butanone,liquid,16.0,9.0,5.1,,72.11,0.800
+chloroform,liquid,17.8,3.1,5.7,,119.38,1.479
+acetone,liquid,15.5,10.4,7.0,,58.08,0.784
+THF,liquid,16.8,5.7,8.0,,72.11,0.889
+NMP,liquid,18.0,12.3,7.2,,99.13,1.028
+DMF,liquid,17.4,13.7,11.3,,73.09,0.944
+DMAc,liquid,16.8,11.5,10.2,,87.12,0.937
+DMSO,liquid,18.4,16.4,10.2,,78.13,1.100

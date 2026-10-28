@@ -23,7 +23,8 @@ META = {
                     'dope cloud point and coagulation bath mixing line. CSV download.'),
     'image_alt': 'Ternary phase diagram of Torlon, NMP and 2-propanol with the binodal, the spinodal and tie-lines',
     'keywords': ('ternary phase diagram, Flory-Huggins, binodal, spinodal, tie-line, critical point, cloud point, '
-                 'phase inversion, membrane casting, polymer solution, casting solution, coagulation bath, Hereon, PAN, PES, PVDF, PEI, macrovoids, porosity, PVP, PEG, CSV'),
+                 'phase inversion, membrane casting, polymer solution, casting solution, coagulation bath, Hereon, PAN, PES, PVDF, PEI, macrovoids, porosity, PVP, PEG, CSV, '
+                 'Hansen solubility parameters, RED, environmental stress cracking, PMMA, wafer cleaning, particle removal'),
     'languages': ['JavaScript', 'Python'],
     'about': [
         ('Flory-Huggins solution theory', 'https://en.wikipedia.org/wiki/Flory%E2%80%93Huggins_solution_theory'),
@@ -117,6 +118,21 @@ def cloud_points():
     return pts
 
 
+def hansen():
+    """Hansen parameters from data/hansen_parameters.csv, with the molar volume of each liquid in cm3/mol."""
+    with open(here / 'data' / 'hansen_parameters.csv', encoding='utf-8') as f:
+        rows = [r for r in f if not r.startswith('#')]
+    out = []
+    for r in csv.DictReader(rows):
+        d = {'name': r['name'], 'kind': r['kind'], 'd': [float(r['dD']), float(r['dP']), float(r['dH'])]}
+        if r['kind'] == 'polymer':
+            d['R0'] = float(r['R0'])
+        else:
+            d['V'] = round(float(r['molar_mass']) / float(r['density']), 2)
+        out.append(d)
+    return out
+
+
 def build(home, full):
     src = (here / 'solver.js').read_text(encoding='utf-8')
     solver = re.sub(r"\nif \(typeof module !== 'undefined'\) \{.*?\n\}\n", "\n", src, flags=re.S)
@@ -124,6 +140,7 @@ def build(home, full):
     page = (here / 'template.html').read_text(encoding='utf-8')
     page = page.replace('/*SOLVER*/', solver.strip())
     page = page.replace('/*CLOUDPOINTS*/', json.dumps(cloud_points()))
+    page = page.replace('/*HANSEN*/', json.dumps(hansen()))
     if not home.startswith('http'):
         page = page.replace('href="/*HOME*/" target="_blank" rel="noopener"', f'href="{home}"')
     page = page.replace('/*HOME*/', home)
