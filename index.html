@@ -567,11 +567,10 @@ RED = Ra / R0</pre>
 <p>
 R<sub>0</sub> is the radius of the solubility sphere of the polymer, fitted to the liquids that
 dissolve it. Below RED = 1 a liquid lies inside the sphere and is expected to dissolve the
-polymer; above 1 it lies outside. Liquids not far outside the sphere can still swell the polymer
-and make a stressed part crack, and at the same RED small molecules do this more readily than
-large ones (Hansen 2002, as summarised by Bubmann et al. 2022). This is why the slide of the talk
-plots RED against the molar volume of the liquid, with a band of possible stress cracking between
-a dissolving zone below and an inert zone above, both boundaries falling toward larger molecules.
+polymer; above 1 it lies outside. Bubmann et al. (2022), citing Hansen (2002), note that a liquid
+with parameters close to those of the polymer is more aggressive, and that small molecules enter
+the polymer and cause stress cracking more readily than large ones. The figure therefore plots RED
+against the molar volume of the liquid.
 </p>
 <p>
 <b>Link to χ.</b> The same distance gives the Flory-Huggins parameter used on this page,
@@ -606,11 +605,10 @@ this reproduces the 2-propanol row of χ<sub>12</sub> used above to within 0.01.
 <p id="red-summary"></p>
 <p>
 <b>What the numbers say for PMMA and ethanol.</b> With the handbook values, ethanol is at
-RED = 1.55 and χ = 1.04: outside the sphere and a non-solvent, inside the band where the slide
-expects cracking. On the slide the PMMA / ethanol point sits at about 1.4, read from a photo. PMMA
+RED = 1.55 and χ = 1.04: outside the sphere and a non-solvent. PMMA
 parameter sets in the literature differ. With 17.7, 6.7 and 6.2 MPa<sup>1/2</sup>
 (Bubmann et al. 2022) and the same R<sub>0</sub>, which belongs to the handbook set, ethanol is at
-RED = 1.62. The conclusion, outside the sphere and in the cracking band, holds for both sets; the
+RED = 1.62. The conclusion, outside the sphere, holds for both sets; the
 exact number does not.
 </p>
 <p>
@@ -1950,15 +1948,6 @@ redraw();
 const HANSEN = [{"name": "PMMA", "kind": "polymer", "d": [18.64, 10.52, 7.51], "R0": 8.59}, {"name": "ethanol", "kind": "liquid", "d": [15.8, 8.8, 19.4], "V": 58.39}, {"name": "methanol", "kind": "liquid", "d": [15.1, 12.3, 22.3], "V": 40.45}, {"name": "2-propanol", "kind": "liquid", "d": [15.8, 6.1, 16.4], "V": 76.95}, {"name": "water", "kind": "liquid", "d": [15.5, 16.0, 42.3], "V": 18.07}, {"name": "ethylene glycol", "kind": "liquid", "d": [17.0, 11.0, 26.0], "V": 55.92}, {"name": "n-heptane", "kind": "liquid", "d": [15.3, 0.0, 0.0], "V": 147.35}, {"name": "toluene", "kind": "liquid", "d": [18.0, 1.4, 2.0], "V": 106.89}, {"name": "butanone", "kind": "liquid", "d": [16.0, 9.0, 5.1], "V": 90.14}, {"name": "chloroform", "kind": "liquid", "d": [17.8, 3.1, 5.7], "V": 80.72}, {"name": "acetone", "kind": "liquid", "d": [15.5, 10.4, 7.0], "V": 74.08}, {"name": "THF", "kind": "liquid", "d": [16.8, 5.7, 8.0], "V": 81.11}, {"name": "NMP", "kind": "liquid", "d": [18.0, 12.3, 7.2], "V": 96.43}, {"name": "DMF", "kind": "liquid", "d": [17.4, 13.7, 11.3], "V": 77.43}, {"name": "DMAc", "kind": "liquid", "d": [16.8, 11.5, 10.2], "V": 92.98}, {"name": "DMSO", "kind": "liquid", "d": [18.4, 16.4, 10.2], "V": 71.03}];
 const HP = HANSEN.find((x) => x.name === 'PMMA');
 const LIQ = HANSEN.filter((x) => x.kind === 'liquid');
-// Boundaries of the stress-cracking band as drawn on the slide of Moukrati (SPCC), read from a photo of the
-// slide; approximate, and only over the molar volumes on the slide (0 to 120 cm3/mol).
-const BAND = { vMax: 120, upper: (V) => 1.97 - 0.00275 * V, lower: (V) => 1.21 - 0.0026 * V };
-function zoneOf(red, V) {
-  if (V > BAND.vMax) return 'beyond the slide';
-  if (red < BAND.lower(V)) return 'dissolving zone';
-  if (red <= BAND.upper(V)) return 'cracking band';
-  return 'inert zone';
-}
 function hansenPolymer() {
   const g = (id, f) => { const v = parseFloat($(id).value); return isFinite(v) ? v : f; };
   return { d: [g('h-d', HP.d[0]), g('h-p', HP.d[1]), g('h-h', HP.d[2])], R0: Math.max(0.1, g('h-r', HP.R0)) };
@@ -1966,7 +1955,6 @@ function hansenPolymer() {
 function setPMMA() { $('h-d').value = HP.d[0]; $('h-p').value = HP.d[1]; $('h-h').value = HP.d[2]; $('h-r').value = HP.R0; }
 function drawRED() {
   const P = hansenPolymer();
-  const isPMMA = P.d.every((x, i) => x === HP.d[i]) && P.R0 === HP.R0;
   const rows = LIQ.map((l, i) => {
     const ra = hansenRa(P.d, l.d);
     return { n: i + 1, name: l.name, V: l.V, ra, red: ra / P.R0, chi: hansenChi(P.d, l.d, l.V) };
@@ -1993,13 +1981,6 @@ function drawRED() {
   // RED = 1: surface of the solubility sphere
   E('line', { x1: sx(0), y1: sy(1), x2: sx(VMAX), y2: sy(1), stroke: '#cc0000', 'stroke-width': 1.5 });
   T(sx(VMAX) - 4, sy(1) - 5, 'RED = 1', { 'text-anchor': 'end', fill: '#cc0000' });
-  if (isPMMA) {
-    for (const f of [BAND.upper, BAND.lower]) {
-      E('line', { x1: sx(0), y1: sy(f(0)), x2: sx(BAND.vMax), y2: sy(f(BAND.vMax)), stroke: '#000000', 'stroke-dasharray': '6 4' });
-    }
-    T(sx(4), sy(BAND.upper(0)) - 6, 'inert', { 'font-size': 12 });
-    T(sx(4), sy(BAND.lower(0)) - 6, 'cracking band (slide)', { 'font-size': 12 });
-  }
   // labels: try a few positions around each point and take the first that does not overlap a label or point
   const boxes = rows.map((r) => [sx(r.V) - 4, sy(r.red) - 4, sx(r.V) + 4, sy(r.red) + 4]);
   const hit = (b) => boxes.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
@@ -2020,14 +2001,13 @@ function drawRED() {
     T(x + pick[0], y + pick[1], label, { 'font-size': 12 });
   }
   for (const l of lines) E('line', { x1: l[0], y1: l[1], x2: l[2], y2: l[3], stroke: '#808080', 'stroke-width': 0.7 });
-  $('red-caption').textContent = 'RED of each liquid with the polymer against its molar volume. Numbers refer to the table. Red line: RED = 1, the surface of the solubility sphere.'
-    + (isPMMA ? ' Dashed: the boundaries of the stress-cracking band as drawn on the slide of the talk, read from a photo and only approximate, for 0 to 120 cm³/mol.' : ' The band from the slide is shown only for the PMMA defaults.');
+  $('red-caption').textContent = 'RED of each liquid with the polymer against its molar volume. Numbers refer to the table. Red line: RED = 1, the surface of the solubility sphere.';
   // table
   const f2 = (x) => x.toFixed(2);
-  let h = '<tr><th>No.</th><th>Liquid</th><th>V, cm³/mol</th><th>Ra, MPa<sup>1/2</sup></th><th>RED</th><th>χ</th><th>Sphere</th>' + (isPMMA ? '<th>Slide</th>' : '') + '</tr>';
+  let h = '<tr><th>No.</th><th>Liquid</th><th>V, cm³/mol</th><th>Ra, MPa<sup>1/2</sup></th><th>RED</th><th>χ</th><th>Sphere</th>' + '</tr>';
   for (const r of rows) {
     h += `<tr><td>${r.n}</td><td style="text-align:left">${r.name}</td><td>${r.V.toFixed(1)}</td><td>${f2(r.ra)}</td><td>${f2(r.red)}</td><td>${f2(r.chi)}</td>`
-      + `<td style="text-align:left">${r.red < 1 ? 'inside' : 'outside'}</td>` + (isPMMA ? `<td style="text-align:left">${zoneOf(r.red, r.V)}</td>` : '') + '</tr>';
+      + `<td style="text-align:left">${r.red < 1 ? 'inside' : 'outside'}</td></tr>`;
   }
   $('red-table').innerHTML = h;
   const e = rows.find((r) => r.name === 'ethanol');
