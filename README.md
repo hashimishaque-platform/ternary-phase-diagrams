@@ -10,6 +10,22 @@ critical point. It is a single-page browser program with no server and no librar
 
 ![Torlon, NMP and 2-propanol: binodal, spinodal, tie-lines and the measured cloud points](screenshot.png)
 
+## How to run it
+
+Use it online at the link above, or run it on your own computer. You need
+[Node.js](https://nodejs.org) 18 or newer for the checks and Python 3 to rebuild the page.
+No packages need to be installed for the page itself.
+
+```
+git clone https://github.com/hashimishaque-platform/ternary-phase-diagrams.git
+cd ternary-phase-diagrams
+python3 -m http.server 8000      # then open http://localhost:8000 in a browser
+```
+
+To change the program, edit `template.html` or `solver.js` and rebuild the page with `python3 build.py`.
+Then run the checks with `node checks.js`; it prints each result and ends with
+"All checks passed." if everything is correct.
+
 ## About the data
 
 The only measured data in this repository are nine published cloud points (Ishaque 2020,
